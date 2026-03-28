@@ -28,6 +28,27 @@ http://localhost:5173
 npm run build
 ```
 
+## Deploy to GitHub Pages
+
+This project is configured for GitHub Pages deployment for the repository:
+
+```bash
+h5-task-monitoring
+```
+
+After pushing to `main`, enable GitHub Pages in the repository settings:
+
+1. Open the GitHub repository
+2. Go to `Settings`
+3. Go to `Pages`
+4. Under `Build and deployment`, choose `GitHub Actions`
+
+After the workflow finishes, the site will be available at:
+
+```bash
+https://romelordinarioGithub.github.io/h5-task-monitoring/
+```
+
 ## Project structure
 
 - `src/App.jsx`: main dashboard UI and mock data
