@@ -499,6 +499,29 @@ function App() {
     () => taskTypes.reduce((sum, item) => sum + item.count, 0),
     [],
   )
+  const resourceTaskCounts = useMemo(() => {
+    const counts = {}
+
+    tasks.forEach((task) => {
+      task.assignees.forEach((assignee) => {
+        counts[assignee] = (counts[assignee] || 0) + 1
+      })
+    })
+
+    return counts
+  }, [])
+  const availableResources = useMemo(() => {
+    const inProgressAssignees = new Set(
+      tasks
+        .filter((task) => task.status === 'In Progress')
+        .flatMap((task) => task.assignees),
+    )
+
+    // Frontend placeholder rule:
+    // show a dev as available when they have no "In Progress" task.
+    // Backend integration can later replace this with "no active timer".
+    return devResources.filter((resource) => !inProgressAssignees.has(resource.name))
+  }, [])
   const filterOptions = useMemo(
     () => ({
       taskType: ['All', ...new Set(tasks.map((task) => task.type))],
@@ -1075,7 +1098,7 @@ function App() {
                       </Text>
                       <Group align="end" gap={8} mt="md">
                         <Title order={1} className="resource-stat-card__value">
-                          {devResources.length}
+                          {availableResources.length}
                         </Title>
                         <Text size="sm" c="dimmed" mb={7}>
                           of 21 available
@@ -1088,7 +1111,7 @@ function App() {
                   </Group>
 
                   <Progress
-                    value={Math.round((devResources.length / 21) * 100)}
+                    value={Math.round((availableResources.length / 21) * 100)}
                     color="grape"
                     radius="xl"
                     size="lg"
@@ -1118,7 +1141,7 @@ function App() {
                           <IconCheck size={14} />
                         </ThemeIcon>
                         <Text fw={700} size="lg">
-                          {devResources.length}
+                          {availableResources.length}
                         </Text>
                       </Group>
                     </Paper>
@@ -1127,9 +1150,10 @@ function App() {
 
                 <Box className="resource-roster-scroll" mt="lg">
                 <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="sm">
-                  {devResources.map((resource) => (
+                  {availableResources.map((resource) => (
                     (() => {
                       const trend = utilizationMeta[resource.trend]
+                      const involvementCount = resourceTaskCounts[resource.name] || 0
                       return (
                         <Paper
                           key={resource.name}
@@ -1175,10 +1199,7 @@ function App() {
                           </Badge>
 
                           <Text size="sm" c="dimmed" mt="md">
-                            {resource.capacity}
-                          </Text>
-                          <Text size="sm" fw={600} mt={4}>
-                            {resource.skill}
+                            Involved in {involvementCount} {involvementCount === 1 ? 'task' : 'tasks'}
                           </Text>
                         </Paper>
                       )
