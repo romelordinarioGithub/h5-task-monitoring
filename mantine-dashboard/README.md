@@ -41,6 +41,8 @@ location.reload()
 
 You can also remove `adweave-auth-email` manually from the browser's local storage for the site.
 
+After logging in again, the `Task View` height should now recalculate immediately without needing a manual browser refresh.
+
 ## Deploy to GitHub Pages
 
 This project is configured for GitHub Pages deployment for the repository:

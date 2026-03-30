@@ -101,6 +101,8 @@ location.reload()
 
 You can also delete `adweave-auth-email` manually from local storage in DevTools.
 
+After logging in again, the `Task View` height should now recalculate immediately without needing a manual browser refresh.
+
 ## Build
 
 ```bash
