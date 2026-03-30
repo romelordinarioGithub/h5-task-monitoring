@@ -28,6 +28,19 @@ http://localhost:5173
 npm run build
 ```
 
+## Test the login screen again
+
+The current login flow is frontend-only and stores the signed-in email in `localStorage`.
+
+If you want to see the login screen again after refreshing, open the browser console and run:
+
+```js
+localStorage.removeItem('adweave-auth-email')
+location.reload()
+```
+
+You can also remove `adweave-auth-email` manually from the browser's local storage for the site.
+
 ## Deploy to GitHub Pages
 
 This project is configured for GitHub Pages deployment for the repository:

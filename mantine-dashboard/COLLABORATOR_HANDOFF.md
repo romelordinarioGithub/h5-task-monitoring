@@ -88,6 +88,19 @@ npm install
 npm run dev
 ```
 
+## Login testing note
+
+The current login screen is frontend-only for now and saves the signed-in email in `localStorage`.
+
+To force the app back to the login screen during testing, run this in the browser console:
+
+```js
+localStorage.removeItem('adweave-auth-email')
+location.reload()
+```
+
+You can also delete `adweave-auth-email` manually from local storage in DevTools.
+
 ## Build
 
 ```bash

@@ -16,4 +16,9 @@ body,
 
 body {
   margin: 0;
+  transition: opacity 120ms ease;
+}
+
+html.fonts-loading body {
+  opacity: 0;
 }

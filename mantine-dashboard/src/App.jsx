@@ -652,7 +652,7 @@ function App() {
       cancelAnimationFrame(frame)
       window.removeEventListener('resize', updateTaskTableHeight)
     }
-  }, [sidebarCollapsed])
+  }, [sessionEmail, sidebarCollapsed])
 
   const handleLogin = () => {
     const trimmedEmail = loginEmail.trim()
