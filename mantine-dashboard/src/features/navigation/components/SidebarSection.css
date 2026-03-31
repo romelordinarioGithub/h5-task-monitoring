@@ -1,0 +1,176 @@
+.dashboard-navbar {
+  background: linear-gradient(180deg, #3d0b7a 0%, #4b0fa0 52%, #35076b 100%);
+  border-inline-end: 0;
+  color: white;
+  transition: width 180ms ease;
+}
+
+.dashboard-brand-kicker {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.dashboard-brand-title {
+  color: white;
+}
+
+.brand-copy {
+  transition: opacity 140ms ease;
+}
+
+.sidebar-label {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sidebar-toggle-expanded,
+.sidebar-toggle-collapsed {
+  display: inline-flex;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+}
+
+.sidebar-toggle-expanded {
+  justify-content: flex-end;
+}
+
+.sidebar-toggle-collapsed {
+  justify-content: center;
+}
+
+.sidebar-link {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.sidebar-link-label,
+.team-card-label {
+  transition: opacity 140ms ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link.is-active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.team-card {
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: white;
+  border-radius: 8px;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease;
+  box-shadow: none;
+  overflow: hidden;
+  backdrop-filter: none;
+}
+
+.team-card > div {
+  width: 100%;
+}
+
+.team-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+}
+
+.team-card.is-active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.team-card.is-disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.team-card.is-disabled:hover {
+  background: transparent;
+  border-color: transparent;
+}
+
+.sidebar-foot {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: white;
+  backdrop-filter: none;
+}
+
+.sidebar-collapsed .dashboard-navbar {
+  padding-inline: 8px;
+}
+
+.sidebar-collapsed .brand-copy,
+.sidebar-collapsed .sidebar-label,
+.sidebar-collapsed .sidebar-link-label,
+.sidebar-collapsed .team-card-label,
+.sidebar-collapsed .team-card-badge,
+.sidebar-collapsed .sidebar-foot {
+  display: none;
+}
+
+.sidebar-collapsed .sidebar-link,
+.sidebar-collapsed .team-card {
+  padding-inline: 8px;
+}
+
+.sidebar-collapsed .sidebar-link > div,
+.sidebar-collapsed .team-card > div {
+  justify-content: center;
+}
+
+.theme-dark .dashboard-navbar {
+  background: linear-gradient(180deg, #1b0b37 0%, #28104f 52%, #17082f 100%);
+}
+
+.theme-dark .sidebar-label,
+.theme-dark .dashboard-brand-kicker {
+  color: rgba(226, 232, 240, 0.68);
+}
+
+.theme-dark .dashboard-brand-title {
+  color: #f8fafc;
+}
+
+.theme-dark .team-card {
+  background: #0f172aeb;
+  border: 1px solid #47556999;
+  color: #e5e7eb;
+  box-shadow: none;
+}
+
+.theme-dark .team-card:hover,
+.theme-dark .team-card.is-active {
+  background: #0f172aeb;
+  border-color: #47556999;
+  color: #e5e7eb;
+  box-shadow: none;
+}
+
+.theme-dark .team-card.is-disabled:hover {
+  background: #0f172aeb;
+  border-color: #47556999;
+}
+
+.theme-dark .sidebar-foot {
+  background: #0f172aeb;
+  border: 1px solid #47556999;
+  color: #e5e7eb;
+}
+
+.theme-dark .sidebar-foot .mantine-Text-root[data-variant='dimmed'] {
+  color: rgba(203, 213, 225, 0.7);
+}

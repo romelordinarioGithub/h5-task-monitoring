@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# macOS metadata
+.DS_Store
+__MACOSX/
+
+# Ignore env files
+.env
+.env.local
