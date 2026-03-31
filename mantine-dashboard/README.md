@@ -66,20 +66,20 @@ https://romelordinarioGithub.github.io/h5-task-monitoring/
 
 ## Project structure
 
-- `src/App.jsx`: main dashboard UI and mock data
+- `src/App.tsx`: main dashboard UI and mock data
 - `src/App.css`: dashboard-specific styling
 - `src/index.css`: app-level base styles
-- `src/main.jsx`: Mantine app bootstrap
+- `src/main.tsx`: Mantine app bootstrap
 
 ## Current frontend status
 
 - The UI is built and interactive.
-- The dashboard currently uses mock data in `src/App.jsx`.
+- The dashboard currently uses mock data in `src/App.tsx`.
 - Task filters, task-type click filtering, selected task view, recent activity, and team capacity widgets are already implemented.
 
 ## For backend integration
 
-Your collaborator will most likely replace the mock data in `src/App.jsx` with:
+Your collaborator will most likely replace the mock data in `src/App.tsx` with:
 
 - API calls
 - shared backend response objects

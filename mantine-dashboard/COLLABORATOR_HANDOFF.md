@@ -4,7 +4,7 @@
 
 This is the Mantine frontend for the AdWeave Monitoring Dashboard.
 
-The current version is frontend-first and uses mock data stored in `src/App.jsx`.
+The current version is frontend-first and uses mock data stored in `src/App.tsx`.
 
 ## Main areas in the UI
 
@@ -17,7 +17,7 @@ The current version is frontend-first and uses mock data stored in `src/App.jsx`
 
 ## Current mock-data areas
 
-Inside `src/App.jsx`, the main mock collections are:
+Inside `src/App.tsx`, the main mock collections are:
 
 - `taskTypes`
 - `tasks`

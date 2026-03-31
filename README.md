@@ -10,10 +10,10 @@ Work in:
 
 Key files:
 
-- [`mantine-dashboard/src/App.jsx`](./mantine-dashboard/src/App.jsx)
+- [`mantine-dashboard/src/App.tsx`](./mantine-dashboard/src/App.tsx)
 - [`mantine-dashboard/src/App.css`](./mantine-dashboard/src/App.css)
 - [`mantine-dashboard/src/index.css`](./mantine-dashboard/src/index.css)
-- [`mantine-dashboard/src/main.jsx`](./mantine-dashboard/src/main.jsx)
+- [`mantine-dashboard/src/main.tsx`](./mantine-dashboard/src/main.tsx)
 
 ## Run locally
 

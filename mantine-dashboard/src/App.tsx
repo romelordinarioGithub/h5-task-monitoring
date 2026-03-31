@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ComponentType, type KeyboardEvent } from 'react'
 import {
   Autocomplete,
   AppShell,
@@ -41,14 +41,77 @@ import {
 } from '@tabler/icons-react'
 import './App.css'
 
-const teams = [
+type IconComponent = ComponentType<{ size?: number | string }>
+
+type Team = {
+  name: string
+  icon: IconComponent
+  disabled: boolean
+}
+
+type TaskType = {
+  name: string
+  count: number
+  icon: IconComponent
+}
+
+type TaskSeed = {
+  title: string
+  type: string
+  channel: string
+  health: string
+  status: string
+  priority: string
+  assignees: string[]
+}
+
+type Task = {
+  name: string
+  type: string
+  channel: string
+  health: string
+  status: string
+  priority: string
+  assignees: string[]
+  assignee: string
+}
+
+type RecentActivity = {
+  task: string
+  fromStatus: string
+  toStatus: string
+  actor: string
+  time: string
+}
+
+type DevResource = {
+  name: string
+  team: string
+  capacity: string
+  skill: string
+  status: string
+  utilization: number
+  trend: 'high' | 'low'
+}
+
+type Filters = {
+  taskName: string
+  taskType: string
+  channel: string
+  health: string
+  status: string
+  priority: string
+  assignee: string
+}
+
+const teams: Team[] = [
   { name: 'H5 Team', icon: IconCode, disabled: false },
   { name: 'Design Team', icon: IconBrush, disabled: true },
   { name: 'Video Dev Team', icon: IconPlayerTrackNext, disabled: true },
   { name: 'QA Team', icon: IconChecklist, disabled: true },
 ]
 
-const taskTypes = [
+const taskTypes: TaskType[] = [
   { name: 'Concept build', count: 14, icon: IconCode },
   { name: 'Studio Setup', count: 9, icon: IconDeviceDesktop },
   { name: 'Migration', count: 6, icon: IconFolderSymlink },
@@ -57,7 +120,7 @@ const taskTypes = [
   { name: 'Others (h5)', count: 5, icon: IconBrush },
 ]
 
-const taskSeeds = [
+const taskSeeds: TaskSeed[] = [
   {
     title: 'Retail campaign kickoff build',
     type: 'Concept build',
@@ -186,9 +249,9 @@ const taskSeeds = [
   },
 ]
 
-const tasks = Array.from({ length: 56 }, (_, index) => {
+const tasks: Task[] = Array.from({ length: 56 }, (_, index) => {
   const seed = taskSeeds[index % taskSeeds.length]
-  const assignees = seed.assignees ?? [seed.assignee]
+  const assignees = seed.assignees
   return {
     name: `${seed.type} - ${seed.title} ${index + 1}`,
     type: seed.type,
@@ -201,7 +264,7 @@ const tasks = Array.from({ length: 56 }, (_, index) => {
   }
 })
 
-const recentActivities = [
+const recentActivities: RecentActivity[] = [
   ['Concept build - Retail campaign kickoff build', 'In Progress', 'Testing', 'Mika Santos', '5 mins ago'],
   ['Studio Setup - Creative package setup', 'Awaiting Feedback', 'In Progress', 'Paolo Reyes', '18 mins ago'],
   ['Migration - Legacy unit migration', 'Testing', 'Completed', 'Ken Dela Cruz', '34 mins ago'],
@@ -215,7 +278,7 @@ const recentActivities = [
   time,
 }))
 
-const devResources = [
+const devResources: DevResource[] = [
   {
     name: 'Mika Santos',
     team: 'h5 team',
@@ -379,7 +442,7 @@ const healthConfig = {
   Critical: { value: 16, color: 'pink' },
 }
 
-function ChannelIcon({ channel }) {
+function ChannelIcon({ channel }: { channel: string }) {
   if (channel === 'Google Display') {
     return (
       <Box className="channel-mark" aria-hidden="true">
@@ -417,7 +480,7 @@ function ChannelIcon({ channel }) {
   )
 }
 
-function ChannelCell({ channel }) {
+function ChannelCell({ channel }: { channel: string }) {
   return (
     <Box title={channel}>
       <ChannelIcon channel={channel} />
@@ -425,7 +488,7 @@ function ChannelCell({ channel }) {
   )
 }
 
-function ChannelDetail({ channel }) {
+function ChannelDetail({ channel }: { channel: string }) {
   return (
     <Group gap="sm" wrap="nowrap">
       <ChannelIcon channel={channel} />
@@ -434,7 +497,7 @@ function ChannelDetail({ channel }) {
   )
 }
 
-function AssigneeChips({ assignees }) {
+function AssigneeChips({ assignees }: { assignees: string[] }) {
   const [primaryAssignee, ...otherAssignees] = assignees
   const overflowCount = otherAssignees.length
   const fullLabel = assignees.join(', ')
@@ -451,7 +514,7 @@ function AssigneeChips({ assignees }) {
   )
 }
 
-function statusBadge(value) {
+function statusBadge(value: string) {
   return (
     <Badge radius="xl" variant="light" color={badgeColor[value] || 'gray'}>
       {value}
@@ -459,7 +522,7 @@ function statusBadge(value) {
   )
 }
 
-function HealthBar({ health }) {
+function HealthBar({ health }: { health: string }) {
   const config = healthConfig[health] || { value: 50, color: 'gray' }
 
   return (
@@ -507,17 +570,17 @@ function App() {
     if (typeof window === 'undefined') return false
     return window.localStorage.getItem('adweave-night-mode') === 'true'
   })
-  const [sessionEmail, setSessionEmail] = useState(() => {
+  const [sessionEmail, setSessionEmail] = useState<string>(() => {
     if (typeof window === 'undefined') return ''
     return window.localStorage.getItem('adweave-auth-email') || ''
   })
   const [loginEmail, setLoginEmail] = useState('')
   const [loginError, setLoginError] = useState('')
   const [selectedTaskName, setSelectedTaskName] = useState(tasks[0].name)
-  const [taskTableHeight, setTaskTableHeight] = useState(null)
-  const taskTableAreaRef = useRef(null)
-  const resourceSectionRef = useRef(null)
-  const [filters, setFilters] = useState({
+  const [taskTableHeight, setTaskTableHeight] = useState<number | null>(null)
+  const taskTableAreaRef = useRef<HTMLDivElement | null>(null)
+  const resourceSectionRef = useRef<HTMLDivElement | null>(null)
+  const [filters, setFilters] = useState<Filters>({
     taskName: '',
     taskType: 'All',
     channel: 'All',
@@ -749,7 +812,7 @@ function App() {
                 value={loginEmail}
                 onChange={(event) => setLoginEmail(event.currentTarget.value)}
                 error={loginError}
-                onKeyDown={(event) => {
+                onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
                   if (event.key === 'Enter') {
                     handleLogin()
                   }
