@@ -18,15 +18,14 @@ import { TeamCapacitySkeleton } from './TeamCapacitySkeleton';
 import { useTeamCapacity } from './useTeamCapacity';
 
 export function TeamCapacitySection() {
-  const { resourceSectionRef, utilizationMeta, resourceTaskCounts, taskTableHeight } =
-    useDashboard();
+  const { resourceSectionRef, utilizationMeta, resourceTaskCounts } = useDashboard();
   const { availableResources, isLoading, totalHeadcount } = useTeamCapacity(tasks);
 
   return (
     <Box ref={resourceSectionRef}>
       <Card withBorder radius="md" padding="lg" className="resource-section-card">
         {isLoading ? (
-          <TeamCapacitySkeleton taskTableHeight={taskTableHeight} />
+          <TeamCapacitySkeleton />
         ) : (
           <>
             <Text className="section-kicker">Team Capacity</Text>
@@ -106,7 +105,7 @@ export function TeamCapacitySection() {
 
             <ScrollArea
               className="resource-roster-scroll"
-              h={taskTableHeight || 360}
+              h="clamp(320px, 40vh, 520px)"
               mt="lg"
               offsetScrollbars
             >

@@ -164,9 +164,22 @@ export function DashboardProvider({ children }: PropsWithChildren) {
     };
 
     const frame = requestAnimationFrame(updateTaskTableHeight);
+    const resourceSection = resourceSectionRef.current;
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined' && resourceSection
+        ? new ResizeObserver(() => {
+            updateTaskTableHeight();
+          })
+        : null;
+
+    if (resourceSection && resizeObserver) {
+      resizeObserver.observe(resourceSection);
+    }
+
     window.addEventListener('resize', updateTaskTableHeight);
     return () => {
       cancelAnimationFrame(frame);
+      resizeObserver?.disconnect();
       window.removeEventListener('resize', updateTaskTableHeight);
     };
   }, [sidebarCollapsed]);

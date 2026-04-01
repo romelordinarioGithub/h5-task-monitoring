@@ -1,22 +1,22 @@
 import { Badge, Box, Group, Progress, Text } from '@mantine/core';
 
 const badgeColor: Record<string, string> = {
-  Healthy: 'teal',
-  Watch: 'blue',
-  Risk: 'violet',
-  Critical: 'pink',
-  'Not Started': 'gray',
-  'On Hold': 'grape',
-  'In Progress': 'blue',
-  'Awaiting Feedback': 'violet',
-  Testing: 'cyan',
-  Completed: 'teal',
-  Low: 'gray',
-  Normal: 'blue',
-  High: 'violet',
-  Urgent: 'pink',
-  Available: 'teal',
-  'Partially Available': 'blue',
+  healthy: 'teal',
+  watch: 'blue',
+  risk: 'violet',
+  critical: 'pink',
+  'not started': 'gray',
+  'on hold': 'grape',
+  'in progress': 'blue',
+  'awaiting feedback': 'violet',
+  testing: 'cyan',
+  completed: 'teal',
+  low: 'gray',
+  normal: 'blue',
+  high: 'violet',
+  urgent: 'pink',
+  available: 'teal',
+  'partially available': 'blue',
 };
 
 const healthConfig: Record<string, { value: number; color: string }> = {
@@ -99,8 +99,10 @@ export function AssigneeChips({ assignees }: { assignees: string[] }) {
 }
 
 export function StatusBadge({ value }: { value: string }) {
+  const normalizedValue = value.trim().toLowerCase().replace(/[_-]+/g, ' ');
+
   return (
-    <Badge radius="xl" variant="light" color={badgeColor[value] || 'gray'}>
+    <Badge radius="xl" variant="light" color={badgeColor[normalizedValue] || 'gray'}>
       {value}
     </Badge>
   );

@@ -3,10 +3,8 @@ import { RawData } from '../../services/dashboard.types';
 export type RecentActivity = {
   key: string;
   task: string;
-  // fromStatus: string;
   toStatus: string;
   actor: string;
-  // time: string;
 };
 
 function slugify(value: string): string {
@@ -48,9 +46,7 @@ export function mapRecentActivity(
   return {
     key: createRecentActivityKey(context.page, context.index, task),
     task,
-    // fromStatus: 'In Progress',
     toStatus,
     actor,
-    // time: 'xx ago',
   };
 }

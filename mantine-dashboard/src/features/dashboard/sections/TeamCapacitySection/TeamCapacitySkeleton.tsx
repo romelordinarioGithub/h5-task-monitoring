@@ -1,10 +1,6 @@
 import { Box, Group, Paper, ScrollArea, SimpleGrid, Skeleton } from '@mantine/core';
 
-type TeamCapacitySkeletonProps = {
-  taskTableHeight?: number;
-};
-
-export function TeamCapacitySkeleton({ taskTableHeight }: TeamCapacitySkeletonProps) {
+export function TeamCapacitySkeleton() {
   return (
     <>
       <Box>
@@ -47,7 +43,7 @@ export function TeamCapacitySkeleton({ taskTableHeight }: TeamCapacitySkeletonPr
 
       <ScrollArea
         className="resource-roster-scroll"
-        h={taskTableHeight || 360}
+        h="clamp(320px, 40vh, 520px)"
         mt="lg"
         offsetScrollbars
       >

@@ -46,18 +46,10 @@ export function RecentUpdatesSection() {
                     className="recent-activity-item"
                   >
                     <div className="recent-activity-copy">
-                      <Group
-                        justify="space-between"
-                        align="flex-start"
-                        wrap="nowrap"
-                        className="recent-activity-header"
-                      >
+                      <Group align="flex-start" wrap="nowrap" className="recent-activity-header">
                         <Text fw={600} size="sm" className="recent-activity-title">
                           {activity.task}
                         </Text>
-                        {/* <Text size="xs" c="dimmed" className="recent-activity-time">
-                          {activity.time}
-                        </Text> */}
                       </Group>
 
                       <Text
@@ -66,12 +58,16 @@ export function RecentUpdatesSection() {
                         mt={6}
                         className="recent-activity-description"
                       >
-                        Status changed to <strong>{activity.toStatus}</strong>
-                        {activity.actor ? ` by ${activity.actor}` : ''}.
+                        {activity.actor ? (
+                          <>
+                            Updated by <strong>{activity.actor}</strong>.
+                          </>
+                        ) : (
+                          'Task update recorded.'
+                        )}
                       </Text>
 
                       <Group gap={6} mt="sm" className="recent-activity-badges">
-                        {/* <StatusBadge value={activity.fromStatus} /> */}
                         <StatusBadge value={activity.toStatus} />
                       </Group>
                     </div>
