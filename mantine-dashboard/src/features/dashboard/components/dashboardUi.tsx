@@ -1,5 +1,30 @@
-import { Badge, Box, Group, Progress, Text } from '@mantine/core'
-import { badgeColor, healthConfig } from '../mock/dashboardData.mock'
+import { Badge, Box, Group, Progress, Text } from '@mantine/core';
+
+const badgeColor: Record<string, string> = {
+  Healthy: 'teal',
+  Watch: 'blue',
+  Risk: 'violet',
+  Critical: 'pink',
+  'Not Started': 'gray',
+  'On Hold': 'grape',
+  'In Progress': 'blue',
+  'Awaiting Feedback': 'violet',
+  Testing: 'cyan',
+  Completed: 'teal',
+  Low: 'gray',
+  Normal: 'blue',
+  High: 'violet',
+  Urgent: 'pink',
+  Available: 'teal',
+  'Partially Available': 'blue',
+};
+
+const healthConfig: Record<string, { value: number; color: string }> = {
+  Healthy: { value: 86, color: 'teal' },
+  Watch: { value: 62, color: 'blue' },
+  Risk: { value: 38, color: 'violet' },
+  Critical: { value: 16, color: 'pink' },
+};
 
 function ChannelIcon({ channel }: { channel: string }) {
   if (channel === 'Google Display') {
@@ -24,7 +49,7 @@ function ChannelIcon({ channel }: { channel: string }) {
           />
         </svg>
       </Box>
-    )
+    );
   }
 
   return (
@@ -36,7 +61,7 @@ function ChannelIcon({ channel }: { channel: string }) {
         />
       </svg>
     </Box>
-  )
+  );
 }
 
 export function ChannelCell({ channel }: { channel: string }) {
@@ -44,7 +69,7 @@ export function ChannelCell({ channel }: { channel: string }) {
     <Box title={channel}>
       <ChannelIcon channel={channel} />
     </Box>
-  )
+  );
 }
 
 export function ChannelDetail({ channel }: { channel: string }) {
@@ -53,20 +78,24 @@ export function ChannelDetail({ channel }: { channel: string }) {
       <ChannelIcon channel={channel} />
       <Text fw={700}>{channel}</Text>
     </Group>
-  )
+  );
 }
 
 export function AssigneeChips({ assignees }: { assignees: string[] }) {
-  const [primaryAssignee, ...otherAssignees] = assignees
-  const overflowCount = otherAssignees.length
-  const fullLabel = assignees.join(', ')
-  const primaryFirstName = primaryAssignee.split(' ')[0] || primaryAssignee
+  const [primaryAssignee, ...otherAssignees] = assignees;
+  const overflowCount = otherAssignees.length;
+  const fullLabel = assignees.join(', ');
+  const primaryFirstName = primaryAssignee.split(' ')[0] || primaryAssignee;
 
   return (
-    <Text className="task-queue-truncate assignee-text" title={fullLabel} aria-label={fullLabel}>
+    <Text
+      className="task-queue-truncate assignee-text"
+      title={fullLabel}
+      aria-label={fullLabel}
+    >
       {overflowCount > 0 ? `${primaryFirstName}, +${overflowCount}` : primaryFirstName}
     </Text>
-  )
+  );
 }
 
 export function StatusBadge({ value }: { value: string }) {
@@ -74,11 +103,11 @@ export function StatusBadge({ value }: { value: string }) {
     <Badge radius="xl" variant="light" color={badgeColor[value] || 'gray'}>
       {value}
     </Badge>
-  )
+  );
 }
 
 export function HealthBar({ health }: { health: string }) {
-  const config = healthConfig[health] || { value: 50, color: 'gray' }
+  const config = healthConfig[health] || { value: 50, color: 'gray' };
 
   return (
     <Box className="health-cell" title={health}>
@@ -93,6 +122,5 @@ export function HealthBar({ health }: { health: string }) {
         {health}
       </Text>
     </Box>
-  )
+  );
 }
-

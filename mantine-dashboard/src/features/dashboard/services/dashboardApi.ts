@@ -1,19 +1,42 @@
-import { apiClient } from '@/shared/lib/axios'
-import { dashboardSummaryMock } from '../mock/dashboard.mock'
+import { apiClient, logApiError } from '@/features/auth/services/authApi';
+import { withRetry } from '@/shared/lib/retry';
 
-export type DashboardSummary = {
-  totalTasks: number
-  completedTasks: number
-  pendingTasks: number
-}
+export type PaginatedResponse<T> = {
+  data: T[];
+  totalPages: number;
+  total: number;
+};
 
-const useMocks = import.meta.env.VITE_USE_MOCKS !== 'false'
+export async function fetchPage<T>(
+  page: number,
+  path: string,
+  params = '',
+  signal?: AbortSignal,
+): Promise<PaginatedResponse<T>> {
+  try {
+    const query = params ? `&${params}` : '';
 
-export async function getDashboardSummary(): Promise<DashboardSummary> {
-  if (useMocks) {
-    return Promise.resolve(dashboardSummaryMock)
+    const response = await withRetry(
+      () =>
+        apiClient.get(`task-monitoring/${path}?page=${page}${query}`, {
+          timeout: 30000,
+          signal,
+        }),
+      2,
+      500,
+    );
+
+    return {
+      data: response.data?.data?.data ?? [],
+      totalPages: response.data?.data?.last_page ?? 1,
+      total: response.data?.data?.total ?? 0,
+    };
+  } catch (error) {
+    logApiError(error);
+    return {
+      data: [],
+      totalPages: 1,
+      total: 0,
+    };
   }
-
-  const response = await apiClient.get<DashboardSummary>('/dashboard/summary')
-  return response.data
 }

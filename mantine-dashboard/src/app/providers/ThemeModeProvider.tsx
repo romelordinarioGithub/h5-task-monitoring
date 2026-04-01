@@ -1,29 +1,36 @@
-import { createContext, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react'
-import { getAppStorage, setAppStorage } from '@/shared/lib/appStorage'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type PropsWithChildren,
+} from 'react';
+import { getStorage, setStorage } from '@/shared/lib/storage';
 
-export type ThemeMode = 'light' | 'dark'
+export type ThemeMode = 'light' | 'dark';
 
 type ThemeModeContextValue = {
-  mode: ThemeMode
-  isDark: boolean
-  toggleMode: () => void
-}
+  mode: ThemeMode;
+  isDark: boolean;
+  toggleMode: () => void;
+};
 
-const ThemeModeContext = createContext<ThemeModeContextValue | null>(null)
+const ThemeModeContext = createContext<ThemeModeContextValue | null>(null);
 
 export function ThemeModeProvider({ children }: PropsWithChildren) {
   const [mode, setMode] = useState<ThemeMode>(() => {
-    if (typeof window === 'undefined') return 'light'
-    return getAppStorage().themeMode
-  })
+    if (typeof window === 'undefined') return 'light';
+    return getStorage().themeMode;
+  });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const isDark = mode === 'dark'
+    if (typeof window === 'undefined') return;
+    const isDark = mode === 'dark';
 
-    setAppStorage({ themeMode: mode })
-    document.documentElement.classList.toggle('theme-dark', isDark)
-  }, [mode])
+    setStorage({ themeMode: mode });
+    document.documentElement.classList.toggle('theme-dark', isDark);
+  }, [mode]);
 
   const value = useMemo(
     () => ({
@@ -32,17 +39,17 @@ export function ThemeModeProvider({ children }: PropsWithChildren) {
       toggleMode: () => setMode((current) => (current === 'dark' ? 'light' : 'dark')),
     }),
     [mode],
-  )
+  );
 
-  return <ThemeModeContext.Provider value={value}>{children}</ThemeModeContext.Provider>
+  return <ThemeModeContext.Provider value={value}>{children}</ThemeModeContext.Provider>;
 }
 
 export function useThemeMode() {
-  const context = useContext(ThemeModeContext)
+  const context = useContext(ThemeModeContext);
 
   if (!context) {
-    throw new Error('useThemeMode must be used within ThemeModeProvider')
+    throw new Error('useThemeMode must be used within ThemeModeProvider');
   }
 
-  return context
+  return context;
 }

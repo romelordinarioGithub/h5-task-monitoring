@@ -1,3 +1,4 @@
+import { env } from '@/shared/config/env';
 import {
   Badge,
   Group,
@@ -10,15 +11,12 @@ import {
 } from '@mantine/core';
 import { IconArrowUpRight, IconMoonStars, IconSun } from '@tabler/icons-react';
 
-type DashboardHeroSectionProps = {
+type HeroSectionProps = {
   isDark: boolean;
   onToggleMode: () => void;
 };
 
-export function DashboardHeroSection({
-  isDark,
-  onToggleMode,
-}: DashboardHeroSectionProps) {
+export function HeroSection({ isDark, onToggleMode }: HeroSectionProps) {
   return (
     <Paper className="hero-card" p="xl" radius="md">
       <Group justify="space-between" align="flex-start">
@@ -53,7 +51,7 @@ export function DashboardHeroSection({
           </UnstyledButton>
           <Badge
             component="a"
-            href={import.meta.env.VITE_ADWEAVE_URL}
+            href={env.adweaveURL}
             target="_blank"
             rel="noreferrer"
             leftSection={<IconArrowUpRight size={14} />}
