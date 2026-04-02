@@ -1,12 +1,4 @@
-export type RawDevResource = {
-  user_id?: number | string;
-  fullname?: string;
-  running_timer?: boolean;
-  last_week?: string | number;
-  schedule?: string;
-  time?: string;
-  time_zone?: string;
-};
+import { RawDevResource } from '../../services/dashboard.types';
 
 export type DevResource = {
   id: number;

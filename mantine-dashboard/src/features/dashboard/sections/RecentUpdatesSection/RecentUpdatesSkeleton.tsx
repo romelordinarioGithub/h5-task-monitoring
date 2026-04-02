@@ -4,8 +4,8 @@ export function RecentUpdatesSectionSkeleton() {
   return (
     <>
       <Box>
-        <Skeleton height={16} width={140} />
-        <Skeleton height={26} width={180} mt={8} />
+        <Skeleton height={14} width={140} />
+        <Skeleton height={22} width={180} mt={4} />
       </Box>
 
       <ScrollArea h={360} mt="lg" offsetScrollbars className="recent-activity-scroll">

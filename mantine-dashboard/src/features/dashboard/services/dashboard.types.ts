@@ -1,4 +1,25 @@
-type RawDataAssignee = {
+import type { ComponentType } from 'react';
+
+export type IconComponent = ComponentType<{ size?: number | string }>;
+
+export type DashboardTeamKey = 'production_h5' | 'design' | 'production_video' | 'qa';
+
+export type DashboardTeamConfig = {
+  key: DashboardTeamKey;
+  name: string;
+  path: string;
+  icon: IconComponent;
+  disabled: boolean;
+};
+
+export type KPITaskTypeConfig = {
+  name: string;
+  apiKey: string;
+  icon: IconComponent;
+  queryValue?: string;
+};
+
+export type RawDataAssignee = {
   id?: number;
   name?: string;
   email?: string;
@@ -17,4 +38,14 @@ export type RawData = {
   link?: string;
   tags?: string;
   assignees?: RawDataAssignee[];
+};
+
+export type RawDevResource = {
+  user_id?: number | string;
+  fullname?: string;
+  running_timer?: boolean;
+  last_week?: string | number;
+  schedule?: string;
+  time?: string;
+  time_zone?: string;
 };

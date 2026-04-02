@@ -7,14 +7,15 @@ import { TaskViewSection } from '../sections/TaskViewSection';
 import { FocusedViewSection } from '../sections/FocusedViewSection';
 import { TeamCapacitySection } from '../sections/TeamCapacitySection';
 import { DashboardProvider, useDashboard } from '../providers/DashboardProvider';
-import { teams } from '../data/dashboardData.mock';
-import { SidebarSection } from '@/features/navigation/components/SidebarSection';
+import { dashboardTeams } from '../services/dashboard.config';
+import { SidebarSection } from '@/features/navigation/SidebarSection';
 import { useThemeMode } from '@/app/providers/ThemeModeProvider';
 import './DashboardApp.css';
 
 function DashboardAppContent() {
   const { isDark, toggleMode } = useThemeMode();
-  const { sidebarCollapsed, setSidebarCollapsed } = useDashboard();
+  const { sidebarCollapsed, setSidebarCollapsed, selectedTeam, setSelectedTeam } =
+    useDashboard();
 
   return (
     <AppShell
@@ -23,8 +24,10 @@ function DashboardAppContent() {
       padding="lg"
     >
       <SidebarSection
-        teams={teams}
+        teams={dashboardTeams}
+        selectedTeam={selectedTeam}
         sidebarCollapsed={sidebarCollapsed}
+        onSelectTeam={setSelectedTeam}
         onToggleSidebar={() => setSidebarCollapsed((value) => !value)}
       />
 

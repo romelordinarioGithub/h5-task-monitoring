@@ -13,18 +13,21 @@ import {
 } from '@mantine/core';
 import { IconCheck, IconUsersGroup } from '@tabler/icons-react';
 import { useDashboard } from '../../providers/DashboardProvider';
-import { tasks } from '../TaskViewSection/api';
 import { TeamCapacitySkeleton } from './TeamCapacitySkeleton';
-import { useTeamCapacity } from './useTeamCapacity';
 
 export function TeamCapacitySection() {
-  const { resourceSectionRef, utilizationMeta, resourceTaskCounts } = useDashboard();
-  const { availableResources, isLoading, totalHeadcount } = useTeamCapacity(tasks);
+  const {
+    resourceSectionRef,
+    utilizationMeta,
+    availableResources,
+    isTeamCapacityLoading,
+    totalHeadcount,
+  } = useDashboard();
 
   return (
     <Box ref={resourceSectionRef}>
       <Card withBorder radius="md" padding="lg" className="resource-section-card">
-        {isLoading ? (
+        {isTeamCapacityLoading ? (
           <TeamCapacitySkeleton />
         ) : (
           <>
@@ -112,7 +115,6 @@ export function TeamCapacitySection() {
               <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="sm">
                 {availableResources.map((resource) => {
                   const trend = utilizationMeta[resource.trend];
-                  const involvementCount = resourceTaskCounts[resource.name] || 0;
 
                   return (
                     <Paper
@@ -158,11 +160,6 @@ export function TeamCapacitySection() {
                       >
                         {trend.label}
                       </Badge>
-
-                      <Text size="sm" c="dimmed" mt="md">
-                        Involved in {involvementCount}{' '}
-                        {involvementCount === 1 ? 'task' : 'tasks'}
-                      </Text>
                     </Paper>
                   );
                 })}

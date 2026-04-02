@@ -1,4 +1,8 @@
-import { RawData } from '../../services/dashboard.types';
+import type { RawData } from '@/features/dashboard/services/dashboard.types';
+import {
+  formatAssigneeNames,
+  normalizeTaskStatus,
+} from '@/features/dashboard/services/dashboard.utils';
 
 export type RecentActivity = {
   key: string;
@@ -20,11 +24,7 @@ export function createRecentActivityKey(
 }
 
 function formatActors(assignees?: RawData['assignees']): string {
-  if (!Array.isArray(assignees) || assignees.length === 0) return '';
-
-  const names = assignees
-    .map((assignee) => String(assignee?.name ?? '').trim())
-    .filter(Boolean);
+  const names = formatAssigneeNames(assignees);
 
   if (names.length === 0) return '';
   if (names.length === 1) return names[0];
@@ -40,13 +40,11 @@ export function mapRecentActivity(
 ): RecentActivity | null {
   const task = String(item?.name ?? '').trim();
   if (!task) return null;
-  const toStatus = String(item?.status ?? 'Unknown').trim() || 'Unknown';
-  const actor = formatActors(item?.assignees);
 
   return {
     key: createRecentActivityKey(context.page, context.index, task),
     task,
-    toStatus,
-    actor,
+    toStatus: normalizeTaskStatus(item?.status),
+    actor: formatActors(item?.assignees),
   };
 }

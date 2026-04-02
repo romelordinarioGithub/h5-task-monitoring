@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { fetchPage } from '@/features/dashboard/services/dashboardApi';
+import { useDashboard } from '../../providers/DashboardProvider';
 import { mapRecentActivity, type RecentActivity } from './recentUpdates.utils';
+import { fetchWeeklyRecentUpdatesPage } from '@/features/dashboard/services/dashboardQueries';
 
 const SCROLL_THRESHOLD_PX = 120;
 
 export function useRecentUpdates() {
+  const { selectedTeam } = useDashboard();
+
   const [activities, setActivities] = useState<RecentActivity[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -18,55 +21,59 @@ export function useRecentUpdates() {
 
   const hasMore = page < totalPages;
 
-  const loadPage = useCallback(async (nextPage: number) => {
-    if (loadingPageRef.current === nextPage) return;
-    if (loadedPagesRef.current.has(nextPage)) return;
+  const loadPage = useCallback(
+    async (nextPage: number) => {
+      if (loadingPageRef.current === nextPage) return;
+      if (loadedPagesRef.current.has(nextPage)) return;
 
-    loadingPageRef.current = nextPage;
+      loadingPageRef.current = nextPage;
 
-    const isFirst = nextPage === 1;
-    if (isFirst) {
-      setIsInitialLoading(true);
-    } else {
-      setIsLoadingMore(true);
-    }
-
-    setError(null);
-
-    try {
-      const response = await fetchPage(
-        nextPage,
-        'dashboard/production_h5',
-        'filter=weekly&rel_type=task',
-      );
-
-      const mapped = (response.data as any[])
-        .map((item, index) => mapRecentActivity(item, { page: nextPage, index }))
-        .filter((item): item is RecentActivity => item !== null);
-
-      loadedPagesRef.current.add(nextPage);
-
-      setActivities((current) => {
-        if (isFirst) return mapped;
-        return [...current, ...mapped];
-      });
-
-      setPage(nextPage);
-      setTotalPages(response.totalPages || 1);
-    } catch (err: any) {
-      setError(String(err?.message || 'Failed to load recent updates'));
-    } finally {
-      loadingPageRef.current = null;
+      const isFirst = nextPage === 1;
 
       if (isFirst) {
-        setIsInitialLoading(false);
+        setIsInitialLoading(true);
       } else {
-        setIsLoadingMore(false);
+        setIsLoadingMore(true);
       }
-    }
-  }, []);
+
+      setError(null);
+
+      try {
+        const response = await fetchWeeklyRecentUpdatesPage(selectedTeam, nextPage);
+
+        const mapped = response.data
+          .map((item, index) => mapRecentActivity(item, { page: nextPage, index }))
+          .filter((item): item is RecentActivity => item !== null);
+
+        loadedPagesRef.current.add(nextPage);
+
+        setActivities((current) => {
+          if (isFirst) return mapped;
+          return [...current, ...mapped];
+        });
+
+        setPage(nextPage);
+        setTotalPages(response.totalPages || 1);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to load recent updates');
+      } finally {
+        loadingPageRef.current = null;
+
+        if (isFirst) {
+          setIsInitialLoading(false);
+        } else {
+          setIsLoadingMore(false);
+        }
+      }
+    },
+    [selectedTeam],
+  );
 
   useEffect(() => {
+    loadedPagesRef.current = new Set();
+    setActivities([]);
+    setPage(1);
+    setTotalPages(1);
     void loadPage(1);
   }, [loadPage]);
 
@@ -81,6 +88,7 @@ export function useRecentUpdates() {
       if (!viewport) return;
 
       const distanceToBottom = viewport.scrollHeight - viewport.clientHeight - y;
+
       if (distanceToBottom <= SCROLL_THRESHOLD_PX) {
         loadNextPage();
       }

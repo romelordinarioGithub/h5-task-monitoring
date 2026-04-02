@@ -46,7 +46,11 @@ export function RecentUpdatesSection() {
                     className="recent-activity-item"
                   >
                     <div className="recent-activity-copy">
-                      <Group align="flex-start" wrap="nowrap" className="recent-activity-header">
+                      <Group
+                        align="flex-start"
+                        wrap="nowrap"
+                        className="recent-activity-header"
+                      >
                         <Text fw={600} size="sm" className="recent-activity-title">
                           {activity.task}
                         </Text>

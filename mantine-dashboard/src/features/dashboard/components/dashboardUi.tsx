@@ -1,4 +1,5 @@
 import { Badge, Box, Group, Progress, Text } from '@mantine/core';
+import { healthConfig } from '../services/dashboard.utils';
 
 const badgeColor: Record<string, string> = {
   healthy: 'teal',
@@ -19,15 +20,12 @@ const badgeColor: Record<string, string> = {
   'partially available': 'blue',
 };
 
-const healthConfig: Record<string, { value: number; color: string }> = {
-  Healthy: { value: 86, color: 'teal' },
-  Watch: { value: 62, color: 'blue' },
-  Risk: { value: 38, color: 'violet' },
-  Critical: { value: 16, color: 'pink' },
-};
-
 function ChannelIcon({ channel }: { channel: string }) {
-  if (channel === 'Google Display') {
+  if (
+    String(channel ?? '')
+      .toLowerCase()
+      .includes('google')
+  ) {
     return (
       <Box className="channel-mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" className="channel-mark__svg">
@@ -81,10 +79,25 @@ export function ChannelDetail({ channel }: { channel: string }) {
   );
 }
 
-export function AssigneeChips({ assignees }: { assignees: string[] }) {
-  const [primaryAssignee, ...otherAssignees] = assignees;
+export function AssigneeChips({ assignees }: { assignees: string[] | string }) {
+  const values = Array.isArray(assignees)
+    ? assignees.filter(Boolean)
+    : String(assignees ?? '')
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean);
+
+  if (values.length === 0) {
+    return (
+      <Text size="sm" c="dimmed">
+        Unassigned
+      </Text>
+    );
+  }
+
+  const [primaryAssignee, ...otherAssignees] = values;
   const overflowCount = otherAssignees.length;
-  const fullLabel = assignees.join(', ');
+  const fullLabel = values.join(', ');
   const primaryFirstName = primaryAssignee.split(' ')[0] || primaryAssignee;
 
   return (
@@ -108,13 +121,18 @@ export function StatusBadge({ value }: { value: string }) {
   );
 }
 
-export function HealthBar({ health }: { health: string }) {
-  const config = healthConfig[health] || { value: 50, color: 'gray' };
+export function HealthBar({ health, score }: { health: string; score?: number }) {
+  const config = healthConfig[health as keyof typeof healthConfig] || {
+    value: 50,
+    color: 'gray',
+  };
+
+  const progressValue = typeof score === 'number' ? score : config.value;
 
   return (
     <Box className="health-cell" title={health}>
       <Progress
-        value={config.value}
+        value={progressValue}
         color={config.color}
         radius="xl"
         size="sm"

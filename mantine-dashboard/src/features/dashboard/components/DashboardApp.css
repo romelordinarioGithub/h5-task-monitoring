@@ -237,6 +237,16 @@
   overflow: hidden;
 }
 
+.task-table-scroll .mantine-Table-scrollContainer,
+.task-table-scroll .mantine-ScrollArea-root {
+  height: 100%;
+}
+
+.task-table-scroll .mantine-ScrollArea-viewport,
+.task-table-scroll [data-mantine-scroll-area-viewport] {
+  max-height: 100%;
+}
+
 .task-table thead th {
   font-size: 0.72rem;
   letter-spacing: 0.08em;
@@ -244,11 +254,22 @@
   color: var(--mantine-color-gray-6);
 }
 
+.task-col-task-name {
+  width: 240px;
+  max-width: 240px;
+}
+
 .task-table thead {
   position: sticky;
   top: 0;
   z-index: 2;
   background: white;
+}
+
+.task-table th:first-child,
+.task-table td:first-child {
+  width: 288px;
+  max-width: 288px;
 }
 
 .task-queue-truncate {
@@ -411,5 +432,6 @@
 
   .task-table-scroll {
     height: auto;
+    max-height: none;
   }
 }

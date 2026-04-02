@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { apiClient, logApiError } from '@/features/auth/services/authApi';
 import { withRetry } from '@/shared/lib/retry';
 
@@ -32,7 +33,12 @@ export async function fetchPage<T>(
       total: response.data?.data?.total ?? 0,
     };
   } catch (error) {
+    if (axios.isCancel(error)) {
+      throw error;
+    }
+
     logApiError(error);
+
     return {
       data: [],
       totalPages: 1,

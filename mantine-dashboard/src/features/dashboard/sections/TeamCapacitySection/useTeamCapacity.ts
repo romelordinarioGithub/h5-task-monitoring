@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { fetchPage } from '@/features/dashboard/services/dashboardApi';
+import { fetchTeamResources } from '@/features/dashboard/services/dashboardQueries';
+import type { DashboardTeamKey, RawDevResource } from '../../services/dashboard.types';
 import {
   type DevResource,
-  type RawDevResource,
   mapDevResource,
   isWithinScheduleAndTime,
   TEAM_CAPACITY_CONSTANTS,
@@ -15,7 +15,7 @@ type TaskLike = {
 
 const { IN_PROGRESS } = TEAM_CAPACITY_CONSTANTS;
 
-export function useTeamCapacity(tasks: TaskLike[]) {
+export function useTeamCapacity(tasks: TaskLike[], selectedTeam: DashboardTeamKey) {
   const [resources, setResources] = useState<DevResource[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,12 +39,13 @@ export function useTeamCapacity(tasks: TaskLike[]) {
       setError(null);
 
       try {
-        const response = await fetchPage(1, 'team-resource/production_h5', 'limit=50');
+        const response = await fetchTeamResources(selectedTeam);
         if (cancelled) return;
 
         const data = Array.isArray(response?.data)
           ? (response.data as RawDevResource[])
           : [];
+
         const mapped: DevResource[] = [];
 
         for (const item of data) {
@@ -53,21 +54,22 @@ export function useTeamCapacity(tasks: TaskLike[]) {
         }
 
         setResources(mapped);
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (cancelled) return;
-        setError(String(err?.message || 'Failed to load team capacity'));
+
+        setError(err instanceof Error ? err.message : 'Failed to load team capacity');
         setResources([]);
       } finally {
         if (!cancelled) setIsLoading(false);
       }
     }
 
-    loadResources();
+    void loadResources();
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [selectedTeam]);
 
   const availableResources = useMemo(() => {
     const inProgressAssignees = new Set<string>();
@@ -86,6 +88,7 @@ export function useTeamCapacity(tasks: TaskLike[]) {
     for (const resource of resources) {
       if (resource.status === IN_PROGRESS) continue;
       if (inProgressAssignees.has(resource.name)) continue;
+
       if (
         !isWithinScheduleAndTime(resource.schedule, resource.time, resource.timeZone, now)
       ) {
@@ -98,8 +101,13 @@ export function useTeamCapacity(tasks: TaskLike[]) {
     return available;
   }, [resources, tasks, nowTick]);
 
+  const assigneeOptions = useMemo(() => {
+    return [...new Set(resources.map((resource) => resource.name).filter(Boolean))];
+  }, [resources]);
+
   return {
     availableResources,
+    assigneeOptions,
     totalHeadcount: resources.length,
     isLoading,
     error,

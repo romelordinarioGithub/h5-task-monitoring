@@ -10,24 +10,25 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { IconDeviceDesktop, IconLayoutSidebarLeftExpand } from '@tabler/icons-react';
-import type { ComponentType } from 'react';
+import type {
+  DashboardTeamConfig,
+  DashboardTeamKey,
+} from '@/features/dashboard/services/dashboard.types';
 import './SidebarSection.css';
 
-export type DashboardTeam = {
-  name: string;
-  icon: ComponentType<{ size?: number | string }>;
-  disabled: boolean;
-};
-
 type SidebarSectionProps = {
-  teams: DashboardTeam[];
+  teams: DashboardTeamConfig[];
+  selectedTeam: DashboardTeamKey;
   sidebarCollapsed: boolean;
+  onSelectTeam: (team: DashboardTeamKey) => void;
   onToggleSidebar: () => void;
 };
 
 export function SidebarSection({
   teams,
+  selectedTeam,
   sidebarCollapsed,
+  onSelectTeam,
   onToggleSidebar,
 }: SidebarSectionProps) {
   return (
@@ -45,6 +46,7 @@ export function SidebarSection({
               </Title>
             </div>
           </Group>
+
           <UnstyledButton
             className={
               sidebarCollapsed ? 'sidebar-toggle-collapsed' : 'sidebar-toggle-expanded'
@@ -62,48 +64,61 @@ export function SidebarSection({
 
       <AppShell.Section grow p="md">
         <Text className="sidebar-label">Teams</Text>
+
         <Stack gap="xs" mt="sm">
-          {teams.map((team, index) => (
-            <Paper
-              key={team.name}
-              className={`team-card ${index === 0 ? 'is-active' : ''} ${team.disabled ? 'is-disabled' : ''}`}
-              p="sm"
-              radius="md"
-              title={team.name}
-            >
-              <Group gap="sm">
-                <ThemeIcon
-                  radius="md"
-                  variant={index === 0 ? 'filled' : 'light'}
-                  color={team.disabled ? 'gray' : index === 0 ? 'grape' : 'gray'}
-                >
-                  <team.icon size={16} />
-                </ThemeIcon>
-                <Text fw={600} className="team-card-label">
-                  {team.name}
-                </Text>
-                {team.disabled ? (
-                  <Badge
-                    className="team-card-badge"
-                    size="xs"
-                    variant="light"
-                    color="gray"
-                    radius="xl"
-                    ml="auto"
+          {teams.map((team) => {
+            const isActive = team.key === selectedTeam;
+
+            return (
+              <Paper
+                key={team.key}
+                className={`team-card ${isActive ? 'is-active' : ''} ${team.disabled ? 'is-disabled' : ''}`}
+                p="sm"
+                radius="md"
+                title={team.name}
+                onClick={() => {
+                  if (!team.disabled) {
+                    onSelectTeam(team.key);
+                  }
+                }}
+                style={{ cursor: team.disabled ? 'not-allowed' : 'pointer' }}
+              >
+                <Group gap="sm">
+                  <ThemeIcon
+                    radius="md"
+                    variant={isActive ? 'filled' : 'light'}
+                    color={team.disabled ? 'gray' : isActive ? 'grape' : 'gray'}
                   >
-                    Soon
-                  </Badge>
-                ) : null}
-              </Group>
-            </Paper>
-          ))}
+                    <team.icon size={16} />
+                  </ThemeIcon>
+
+                  <Text fw={600} className="team-card-label">
+                    {team.name}
+                  </Text>
+
+                  {team.disabled ? (
+                    <Badge
+                      className="team-card-badge"
+                      size="xs"
+                      variant="light"
+                      color="gray"
+                      radius="xl"
+                      ml="auto"
+                    >
+                      Soon
+                    </Badge>
+                  ) : null}
+                </Group>
+              </Paper>
+            );
+          })}
         </Stack>
       </AppShell.Section>
 
       <AppShell.Section p="md">
         <Paper className="sidebar-foot" p="md" radius="md">
           <Badge color="grape" variant="light" radius="xl">
-            4 teams
+            {teams.length} teams
           </Badge>
           <Text mt="sm" size="sm" c="dimmed">
             Internal navigation for monitoring ownership and team views.
