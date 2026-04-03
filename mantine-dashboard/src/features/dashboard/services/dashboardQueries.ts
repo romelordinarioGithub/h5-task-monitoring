@@ -18,6 +18,7 @@ export function buildTaskViewQuery(query: TaskViewQuery): string {
 
   params.set('rel_type', 'task');
   params.set('filter', 'weekly');
+  params.set('sort', 'asc');
 
   if (query.limit) params.set('limit', String(query.limit));
   if (query.search?.trim()) {

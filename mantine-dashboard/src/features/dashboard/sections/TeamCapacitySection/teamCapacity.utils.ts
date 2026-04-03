@@ -47,8 +47,6 @@ const DAY_ALIASES: Record<string, string> = {
   saturday: 'saturday',
 };
 
-export const EXCLUDED_USER_IDS = new Set<number>([1, 24, 858, 890, 891]);
-
 function normalizeWhitespace(value: string): string {
   return value.replace(/\s+/g, ' ').trim();
 }
@@ -228,9 +226,12 @@ export function isWithinScheduleAndTime(
   return isSameDayWindow || isCarryOverWindow;
 }
 
-export function mapDevResource(item: RawDevResource): DevResource | null {
+export function mapDevResource(
+  item: RawDevResource,
+  excludedUserIds: ReadonlySet<number>,
+): DevResource | null {
   const id = Number(item?.user_id);
-  if (!Number.isFinite(id) || EXCLUDED_USER_IDS.has(id)) return null;
+  if (!Number.isFinite(id) || excludedUserIds.has(id)) return null;
 
   const name = normalizeWhitespace(String(item?.fullname ?? ''));
   if (!name) return null;

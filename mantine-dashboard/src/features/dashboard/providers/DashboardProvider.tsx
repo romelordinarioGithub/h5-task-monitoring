@@ -16,14 +16,17 @@ import axios from 'axios';
 import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons-react';
 import {
   DEFAULT_DASHBOARD_TEAM,
+  getDashboardTeamBySlug,
   getDashboardKPITaskTypeByName,
   getDashboardKPITaskTypeLabel,
+  getDashboardTeamSlug,
 } from '../services/dashboard.config';
 import { fetchTaskViewPage } from '../services/dashboardQueries';
 import type { DashboardTeamKey } from '../services/dashboard.types';
 import { mapRawTaskToTask, type Task } from '../sections/TaskViewSection/taskView.utils';
 import { useTeamCapacity } from '../sections/TeamCapacitySection/useTeamCapacity';
 import type { DevResource } from '../sections/TeamCapacitySection/teamCapacity.utils';
+import { clearTaskFilterStorage, getStorage, setStorage } from '@/shared/lib/storage';
 
 type Filters = {
   taskName: string;
@@ -87,12 +90,54 @@ const TASK_STATUS_OPTIONS = [
   'On Hold',
   'In Progress',
   'Awaiting Feedback',
+  'Client Review',
+  'For Handover',
   'Testing',
   'Completed',
 ];
 const TASK_PRIORITY_OPTIONS = ['All', 'Low', 'Normal', 'High', 'Urgent'];
+const DEFAULT_TASK_FILTER = {
+  taskType: 'All',
+  channel: 'All',
+  health: 'All',
+  status: 'All',
+  priority: 'All',
+} as const;
 
 const DashboardContext = createContext<DashboardContextValue | null>(null);
+
+function buildAppPath(pathSegment = ''): string {
+  const normalizedSegment = String(pathSegment).replace(/^\/+|\/+$/g, '');
+  return normalizedSegment ? `/${normalizedSegment}` : '/';
+}
+
+function resolveTeamSlugFromPathname(pathname?: string): string {
+  const normalizedPathname = String(pathname ?? '').trim();
+  if (!normalizedPathname) return '';
+
+  const [firstSegment = ''] = normalizedPathname
+    .replace(/^\/+|\/+$/g, '')
+    .split('/')
+    .filter(Boolean);
+
+  return firstSegment.toLowerCase();
+}
+
+function resolveInitialDashboardTeam(): DashboardTeamKey {
+  if (typeof window === 'undefined') {
+    return DEFAULT_DASHBOARD_TEAM;
+  }
+
+  const slugFromPath = resolveTeamSlugFromPathname(window.location.pathname);
+  const teamFromPath = getDashboardTeamBySlug(slugFromPath);
+  if (teamFromPath) return teamFromPath;
+
+  const slugFromStorage = getStorage().teamSlug;
+  const teamFromStorage = getDashboardTeamBySlug(slugFromStorage);
+  if (teamFromStorage) return teamFromStorage;
+
+  return DEFAULT_DASHBOARD_TEAM;
+}
 
 function useDebouncedValue<T>(value: T, delay = 400): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -113,8 +158,7 @@ function useDebouncedValue<T>(value: T, delay = 400): T {
 export function DashboardProvider({ children }: PropsWithChildren) {
   const DEFAULT_TASK_TABLE_HEIGHT = 420;
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [selectedTeam, setSelectedTeam] =
-    useState<DashboardTeamKey>(DEFAULT_DASHBOARD_TEAM);
+  const [selectedTeam, setSelectedTeam] = useState<DashboardTeamKey>(resolveInitialDashboardTeam);
   const [selectedTaskName, setSelectedTaskName] = useState('');
   const [taskTableHeight, setTaskTableHeight] = useState<number | null>(
     DEFAULT_TASK_TABLE_HEIGHT,
@@ -123,14 +167,18 @@ export function DashboardProvider({ children }: PropsWithChildren) {
   const taskTableAreaRef = useRef<HTMLDivElement | null>(null);
   const resourceSectionRef = useRef<HTMLDivElement | null>(null);
 
-  const [filters, setFilters] = useState<Filters>({
-    taskName: '',
-    taskType: 'All',
-    channel: 'All',
-    health: 'All',
-    status: 'All',
-    priority: 'All',
-    assignee: '',
+  const [filters, setFilters] = useState<Filters>(() => {
+    const storedTaskFilter = typeof window === 'undefined' ? null : getStorage().taskFilter;
+
+    return {
+      taskName: '',
+      taskType: storedTaskFilter?.taskType ?? DEFAULT_TASK_FILTER.taskType,
+      channel: storedTaskFilter?.channel ?? DEFAULT_TASK_FILTER.channel,
+      health: storedTaskFilter?.health ?? DEFAULT_TASK_FILTER.health,
+      status: storedTaskFilter?.status ?? DEFAULT_TASK_FILTER.status,
+      priority: storedTaskFilter?.priority ?? DEFAULT_TASK_FILTER.priority,
+      assignee: '',
+    };
   });
 
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -140,6 +188,8 @@ export function DashboardProvider({ children }: PropsWithChildren) {
   const [isTasksLoading, setIsTasksLoading] = useState(true);
   const [isLoadingMoreTasks, setIsLoadingMoreTasks] = useState(false);
   const [taskError, setTaskError] = useState<string | null>(null);
+  const previousSelectedTeamRef = useRef<DashboardTeamKey | null>(null);
+  const hasInitializedTaskFilterPersistenceRef = useRef(false);
 
   const normalizedTaskName = filters.taskName.trim();
   const debouncedTaskName = useDebouncedValue(normalizedTaskName, 400);
@@ -349,18 +399,80 @@ export function DashboardProvider({ children }: PropsWithChildren) {
   }, [filteredTasks, selectedTask, selectedTaskName]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handlePopState = () => {
+      const slugFromPath = resolveTeamSlugFromPathname(window.location.pathname);
+      const teamFromPath = getDashboardTeamBySlug(slugFromPath);
+      if (!teamFromPath) return;
+      setSelectedTeam((current) => (current === teamFromPath ? current : teamFromPath));
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const selectedTeamSlug = getDashboardTeamSlug(selectedTeam);
+    const currentPathTeamSlug = resolveTeamSlugFromPathname(window.location.pathname);
+
+    if (currentPathTeamSlug !== selectedTeamSlug) {
+      const currentSearch = window.location.search ?? '';
+      const currentHash = window.location.hash ?? '';
+      window.history.replaceState(
+        null,
+        '',
+        `${buildAppPath(selectedTeamSlug)}${currentSearch}${currentHash}`,
+      );
+    }
+
+    setStorage({ teamSlug: selectedTeamSlug });
+  }, [selectedTeam]);
+
+  useEffect(() => {
+    const previousSelectedTeam = previousSelectedTeamRef.current;
+    previousSelectedTeamRef.current = selectedTeam;
+
+    if (!previousSelectedTeam || previousSelectedTeam === selectedTeam) {
+      return;
+    }
+
+    clearTaskFilterStorage();
+
     setFilters((current) => ({
       ...current,
       taskName: '',
-      taskType: 'All',
-      channel: 'All',
-      health: 'All',
-      status: 'All',
-      priority: 'All',
+      taskType: DEFAULT_TASK_FILTER.taskType,
+      channel: DEFAULT_TASK_FILTER.channel,
+      health: DEFAULT_TASK_FILTER.health,
+      status: DEFAULT_TASK_FILTER.status,
+      priority: DEFAULT_TASK_FILTER.priority,
       assignee: '',
     }));
     setSelectedTaskName('');
   }, [selectedTeam]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!hasInitializedTaskFilterPersistenceRef.current) {
+      hasInitializedTaskFilterPersistenceRef.current = true;
+      return;
+    }
+
+    setStorage({
+      taskFilter: {
+        taskType: filters.taskType,
+        channel: filters.channel,
+        health: filters.health,
+        status: filters.status,
+        priority: filters.priority,
+      },
+    });
+  }, [filters.channel, filters.health, filters.priority, filters.status, filters.taskType]);
 
   useLayoutEffect(() => {
     const updateTaskTableHeight = () => {

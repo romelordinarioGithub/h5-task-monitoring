@@ -42,6 +42,7 @@ export function TaskViewSection() {
 
   const hasFinishedFirstLoadRef = useRef(false);
   const hasUserScrolledTableRef = useRef(false);
+  const previousSelectedTeamRef = useRef(selectedTeam);
   const [selectedTaskNameOption, setSelectedTaskNameOption] = useState<string | null>(
     null,
   );
@@ -61,7 +62,6 @@ export function TaskViewSection() {
   useEffect(() => {
     hasUserScrolledTableRef.current = false;
   }, [
-    selectedTeam,
     filters.taskName,
     filters.taskType,
     filters.channel,
@@ -70,6 +70,12 @@ export function TaskViewSection() {
     filters.priority,
     filters.assignee,
   ]);
+
+  useEffect(() => {
+    hasFinishedFirstLoadRef.current = false;
+    hasUserScrolledTableRef.current = false;
+    previousSelectedTeamRef.current = selectedTeam;
+  }, [selectedTeam]);
 
   useEffect(() => {
     if (!isTasksLoading) {
@@ -176,8 +182,11 @@ export function TaskViewSection() {
     taskTableHeight,
   ]);
 
+  const isTeamSwitching = previousSelectedTeamRef.current !== selectedTeam;
   const isInitialLoading =
-    isTasksLoading && !taskError && !hasFinishedFirstLoadRef.current;
+    isTasksLoading &&
+    !taskError &&
+    (!hasFinishedFirstLoadRef.current || isTeamSwitching);
   const isFilterPending =
     !taskError &&
     !isInitialLoading &&

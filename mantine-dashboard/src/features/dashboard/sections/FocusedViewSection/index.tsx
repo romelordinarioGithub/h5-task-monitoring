@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import {
   Box,
   Card,
@@ -14,9 +15,26 @@ import { ChannelDetail, StatusBadge } from '../../components/dashboardUi';
 import { FocusedViewSkeleton } from './FocusedViewSkeleton';
 
 export function FocusedViewSection() {
-  const { selectedTask, isTasksLoading } = useDashboard();
+  const { selectedTask, isTasksLoading, selectedTeam } = useDashboard();
+  const hasFinishedFirstLoadRef = useRef(false);
+  const previousSelectedTeamRef = useRef(selectedTeam);
 
-  if (isTasksLoading && !selectedTask) {
+  useEffect(() => {
+    hasFinishedFirstLoadRef.current = false;
+    previousSelectedTeamRef.current = selectedTeam;
+  }, [selectedTeam]);
+
+  useEffect(() => {
+    if (!isTasksLoading) {
+      hasFinishedFirstLoadRef.current = true;
+    }
+  }, [isTasksLoading]);
+
+  const isTeamSwitching = previousSelectedTeamRef.current !== selectedTeam;
+  const showInitialSkeleton =
+    isTasksLoading && (!hasFinishedFirstLoadRef.current || isTeamSwitching);
+
+  if (showInitialSkeleton) {
     return (
       <Card withBorder radius="md" padding="lg">
         <FocusedViewSkeleton />

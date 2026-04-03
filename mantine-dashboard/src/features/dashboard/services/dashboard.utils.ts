@@ -43,6 +43,10 @@ export function normalizeTaskStatus(value?: string | null): string {
       return 'In Progress';
     case 'awaiting feedback':
       return 'Awaiting Feedback';
+    case 'client review':
+      return 'Client Review';
+    case 'for handover':
+      return 'For Handover';
     case 'testing':
       return 'Testing';
     case 'completed':
