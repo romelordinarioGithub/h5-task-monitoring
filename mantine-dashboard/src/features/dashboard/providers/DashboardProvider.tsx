@@ -243,7 +243,16 @@ export function DashboardProvider({ children }: PropsWithChildren) {
   ]);
 
   const filteredTasks = useMemo(() => {
+    const normalizedTaskName = debouncedTaskName.toLowerCase();
+
     return tasks.filter((task) => {
+      if (
+        normalizedTaskName &&
+        !task.name.toLowerCase().includes(normalizedTaskName)
+      ) {
+        return false;
+      }
+
       if (filters.health !== 'All' && task.health !== filters.health) {
         return false;
       }
@@ -259,7 +268,7 @@ export function DashboardProvider({ children }: PropsWithChildren) {
 
       return true;
     });
-  }, [filters.assignee, filters.health, tasks]);
+  }, [debouncedTaskName, filters.assignee, filters.health, tasks]);
 
   const {
     availableResources,

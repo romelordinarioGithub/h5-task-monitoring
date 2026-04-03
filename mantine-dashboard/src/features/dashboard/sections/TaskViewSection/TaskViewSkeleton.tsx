@@ -1,4 +1,4 @@
-import { Box, Paper, ScrollArea, SimpleGrid, Skeleton, Table } from '@mantine/core';
+import { Box, ScrollArea, SimpleGrid, Skeleton, Table } from '@mantine/core';
 
 export function TaskViewSectionSkeleton() {
   return (

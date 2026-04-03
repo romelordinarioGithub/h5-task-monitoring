@@ -177,8 +177,17 @@ export function TaskViewSection() {
   const isFilterPending =
     !taskError &&
     !isInitialLoading &&
-    !pauseLazyLoadForTaskName &&
     (isTaskNameFilterPending || (isTasksLoading && !isLoadingMoreTasks));
+  const showFilterPendingSkeleton = isFilterPending;
+  const showLoadMoreSkeleton =
+    !taskError &&
+    !showFilterPendingSkeleton &&
+    (isTasksLoading || isLoadingMoreTasks);
+  const showNoTasksMatchMessage =
+    filteredTasks.length === 0 &&
+    !taskError &&
+    !showFilterPendingSkeleton &&
+    !showLoadMoreSkeleton;
 
   return (
     <Box className="dashboard-work-main">
@@ -304,7 +313,7 @@ export function TaskViewSection() {
                           </Text>
                         </Table.Td>
                       </Table.Tr>
-                    ) : isFilterPending ? (
+                    ) : showFilterPendingSkeleton ? (
                       <TaskViewLazySkeleton />
                     ) : (
                       <>
@@ -346,14 +355,11 @@ export function TaskViewSection() {
                           </Table.Tr>
                         ))}
 
-                        {(isTasksLoading || isLoadingMoreTasks) &&
-                        !pauseLazyLoadForTaskName ? (
+                        {showLoadMoreSkeleton ? (
                           <TaskViewLazySkeleton />
                         ) : null}
 
-                        {filteredTasks.length === 0 &&
-                        !isTasksLoading &&
-                        !isTaskNameFilterPending ? (
+                        {showNoTasksMatchMessage ? (
                           <Table.Tr>
                             <Table.Td colSpan={7}>
                               <Text c="dimmed" ta="center" py="xl">
