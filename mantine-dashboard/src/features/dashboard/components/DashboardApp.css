@@ -419,9 +419,36 @@
   color: var(--mantine-color-gray-6);
 }
 
-.task-col-task-name {
-  width: 240px;
-  max-width: 240px;
+.task-table {
+  table-layout: fixed;
+}
+
+.task-col-name {
+  width: 288px;
+}
+
+.task-col-type {
+  width: 164px;
+}
+
+.task-col-channel {
+  width: 88px;
+}
+
+.task-col-health {
+  width: 108px;
+}
+
+.task-col-status {
+  width: 146px;
+}
+
+.task-col-priority {
+  width: 118px;
+}
+
+.task-col-assignee {
+  width: 160px;
 }
 
 .task-table thead {
@@ -435,6 +462,21 @@
 .task-table td:first-child {
   width: 288px;
   max-width: 288px;
+}
+
+.task-table th:nth-child(5),
+.task-table td:nth-child(5) {
+  width: 146px;
+}
+
+.task-table th:nth-child(6),
+.task-table td:nth-child(6) {
+  width: 118px;
+}
+
+.task-table th:nth-child(7),
+.task-table td:nth-child(7) {
+  width: 160px;
 }
 
 .task-queue-truncate {

@@ -22,6 +22,15 @@ export function TaskViewSectionSkeleton() {
         <ScrollArea h={420} offsetScrollbars>
           <Table.ScrollContainer minWidth={920}>
             <Table verticalSpacing="md" className="task-table">
+              <colgroup>
+                <col className="task-col-name" />
+                <col className="task-col-type" />
+                <col className="task-col-channel" />
+                <col className="task-col-health" />
+                <col className="task-col-status" />
+                <col className="task-col-priority" />
+                <col className="task-col-assignee" />
+              </colgroup>
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th>Task Name</Table.Th>
