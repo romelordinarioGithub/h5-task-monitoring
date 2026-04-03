@@ -78,8 +78,8 @@ export function KPISnapshotSection() {
   };
 
   return (
-    <Grid.Col span={{ base: 12, xl: 6 }}>
-      <Card withBorder radius="md" padding="lg" h="100%">
+    <Grid.Col span={{ base: 12, md: 6 }} className="top-row-kpi">
+      <Card withBorder radius="md" padding="lg">
         {isLoading ? (
           <KPISnapshotSkeleton />
         ) : error ? (

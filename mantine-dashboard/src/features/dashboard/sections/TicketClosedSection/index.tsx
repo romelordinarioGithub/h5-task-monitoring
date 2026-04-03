@@ -11,8 +11,8 @@ export function TicketClosedSection() {
   const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   return (
-    <Grid.Col span={{ base: 12, md: 6, xl: 3 }}>
-      <Card withBorder radius="md" padding="lg" h="100%">
+    <Grid.Col span={{ base: 12, md: 3 }} className="top-row-ticket">
+      <Card withBorder radius="md" padding="lg" className="top-panel-card ticket-panel-card">
         {isLoading ? (
           <TicketClosedSkeleton />
         ) : (
@@ -22,7 +22,7 @@ export function TicketClosedSection() {
               Ticket Closed
             </Title>
 
-            <Box mt="xl">
+            <Box mt="xl" className="ticket-panel-body">
               <Box className="ticket-card">
                 <RingProgress
                   size={220}

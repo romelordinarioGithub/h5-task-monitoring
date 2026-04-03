@@ -17,8 +17,8 @@ export function RecentUpdatesSection() {
   } = useRecentUpdates();
 
   return (
-    <Grid.Col span={{ base: 12, md: 6, xl: 3 }}>
-      <Card withBorder radius="md" padding="lg" h="100%">
+    <Grid.Col span={{ base: 12, md: 3 }} className="top-row-recent">
+      <Card withBorder radius="md" padding="lg" className="top-panel-card recent-updates-card">
         {isInitialLoading ? (
           <RecentUpdatesSectionSkeleton />
         ) : (
