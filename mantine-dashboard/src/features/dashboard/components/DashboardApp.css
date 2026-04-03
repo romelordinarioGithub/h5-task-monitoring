@@ -84,6 +84,153 @@
   line-height: 1;
 }
 
+.kpi-carousel-header {
+  gap: 12px;
+}
+
+.kpi-carousel-controls {
+  flex-shrink: 0;
+}
+
+.kpi-carousel-count {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  padding-inline: 14px;
+}
+
+.kpi-carousel-arrow {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(225, 230, 242, 0.98);
+  background: rgba(248, 250, 255, 0.96);
+  color: #7a8597;
+  box-shadow: 0 6px 14px rgba(92, 104, 138, 0.08);
+}
+
+.kpi-carousel-arrow:hover {
+  background: white;
+  color: #5c648a;
+}
+
+.kpi-carousel-stage {
+  min-height: 344px;
+  display: flex;
+  align-items: flex-start;
+  margin-top: var(--mantine-spacing-lg);
+}
+
+.kpi-carousel-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, auto);
+  gap: var(--mantine-spacing-md);
+  align-content: start;
+  align-items: start;
+}
+
+.kpi-carousel-grid--next {
+  animation: kpi-slide-in-next 320ms ease;
+}
+
+.kpi-carousel-grid--prev {
+  animation: kpi-slide-in-prev 320ms ease;
+}
+
+.kpi-carousel-placeholder {
+  visibility: hidden;
+  min-height: 184px;
+}
+
+.kpi-carousel-card {
+  height: 184px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 6px 14px rgba(92, 104, 138, 0.05);
+  align-self: start;
+}
+
+.kpi-carousel-icon {
+  background: #f6e9ff;
+  color: #b347ea;
+}
+
+.kpi-carousel-load {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  padding-inline: 14px;
+}
+
+.kpi-carousel-title {
+  font-size: 0.96rem;
+  line-height: 1.35;
+  min-height: 2.6em;
+}
+
+.kpi-carousel-value {
+  font-size: clamp(2.2rem, 2.8vw, 2.7rem);
+}
+
+.kpi-carousel-unit {
+  font-size: 1rem;
+}
+
+.kpi-carousel-dots {
+  min-height: 12px;
+}
+
+.kpi-carousel-dot {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0;
+  background: rgba(203, 213, 225, 0.95);
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    transform 140ms ease,
+    width 140ms ease;
+}
+
+.kpi-carousel-dot:hover {
+  background: rgba(148, 163, 184, 0.92);
+}
+
+.kpi-carousel-dot.is-active {
+  background: #6f48ff;
+  width: 24px;
+}
+
+@keyframes kpi-slide-in-next {
+  0% {
+    opacity: 0.18;
+    transform: translateX(24px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes kpi-slide-in-prev {
+  0% {
+    opacity: 0.18;
+    transform: translateX(-24px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .resource-stat-card {
   background: linear-gradient(180deg, #ffffff 0%, #fafbff 100%);
   border: 1px solid rgba(225, 230, 242, 0.98);
@@ -375,6 +522,34 @@
   color: rgba(226, 232, 240, 0.68);
 }
 
+.theme-dark .kpi-carousel-arrow {
+  background: rgba(30, 41, 59, 0.92);
+  border-color: rgba(71, 85, 105, 0.6);
+  color: rgba(226, 232, 240, 0.76);
+}
+
+.theme-dark .kpi-carousel-arrow:hover {
+  background: rgba(51, 65, 85, 0.96);
+  color: #f8fafc;
+}
+
+.theme-dark .kpi-carousel-icon {
+  background: rgba(91, 33, 182, 0.22);
+  color: #d8b4fe;
+}
+
+.theme-dark .kpi-carousel-dot {
+  background: rgba(100, 116, 139, 0.72);
+}
+
+.theme-dark .kpi-carousel-dot:hover {
+  background: rgba(148, 163, 184, 0.88);
+}
+
+.theme-dark .kpi-carousel-dot.is-active {
+  background: #c084fc;
+}
+
 .theme-dark .assignee-text,
 .theme-dark .selected-task-link,
 .theme-dark .selected-task-link__inner {
@@ -422,6 +597,15 @@
     width: 100%;
   }
 
+  .kpi-carousel-stage {
+    min-height: auto;
+  }
+
+  .kpi-carousel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+  }
+
   .dashboard-work-layout {
     grid-template-columns: 1fr;
   }
@@ -433,5 +617,24 @@
   .task-table-scroll {
     height: auto;
     max-height: none;
+  }
+}
+
+@media (max-width: 48em) {
+  .kpi-carousel-header {
+    align-items: flex-start;
+  }
+
+  .kpi-carousel-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .kpi-carousel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-carousel-placeholder {
+    display: none;
   }
 }

@@ -17,6 +17,7 @@ export type KPITaskTypeConfig = {
   apiKey: string;
   icon: IconComponent;
   queryValue?: string;
+  mockCount?: number;
 };
 
 export type RawDataAssignee = {

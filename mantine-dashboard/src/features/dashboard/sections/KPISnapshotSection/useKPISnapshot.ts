@@ -45,10 +45,16 @@ export function useKPISnapshot() {
 
         if (!mounted) return;
 
+        const shouldUsePrototypeCounts =
+          (selectedTeam === 'production_video' || selectedTeam === 'qa') &&
+          Object.values(totalsByApiKey).every((count) => Number(count ?? 0) === 0);
+
         const nextTaskTypes = getDashboardKPITaskTypes(selectedTeam).map((taskType) => ({
           name: taskType.name,
           icon: taskType.icon,
-          count: totalsByApiKey[normalizeApiKey(taskType.apiKey)] ?? 0,
+          count: shouldUsePrototypeCounts
+            ? Number(taskType.mockCount ?? 0)
+            : (totalsByApiKey[normalizeApiKey(taskType.apiKey)] ?? 0),
         }));
 
         setTaskTypes(nextTaskTypes);
