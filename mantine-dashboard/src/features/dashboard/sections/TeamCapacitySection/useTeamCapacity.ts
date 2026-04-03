@@ -14,6 +14,7 @@ type TaskLike = {
 };
 
 const { IN_PROGRESS } = TEAM_CAPACITY_CONSTANTS;
+const teamResourcesCache = new Map<DashboardTeamKey, DevResource[]>();
 
 export function useTeamCapacity(tasks: TaskLike[], selectedTeam: DashboardTeamKey) {
   const [resources, setResources] = useState<DevResource[]>([]);
@@ -33,13 +34,22 @@ export function useTeamCapacity(tasks: TaskLike[], selectedTeam: DashboardTeamKe
 
   useEffect(() => {
     let cancelled = false;
+    const controller = new AbortController();
 
     async function loadResources() {
-      setIsLoading(true);
+      const cachedResources = teamResourcesCache.get(selectedTeam) ?? null;
+
+      if (cachedResources) {
+        setResources(cachedResources);
+        setIsLoading(false);
+      } else {
+        setIsLoading(true);
+      }
+
       setError(null);
 
       try {
-        const response = await fetchTeamResources(selectedTeam);
+        const response = await fetchTeamResources(selectedTeam, controller.signal);
         if (cancelled) return;
 
         const data = Array.isArray(response?.data)
@@ -53,12 +63,15 @@ export function useTeamCapacity(tasks: TaskLike[], selectedTeam: DashboardTeamKe
           if (resource) mapped.push(resource);
         }
 
+        teamResourcesCache.set(selectedTeam, mapped);
         setResources(mapped);
       } catch (err: unknown) {
         if (cancelled) return;
 
         setError(err instanceof Error ? err.message : 'Failed to load team capacity');
-        setResources([]);
+        if (!teamResourcesCache.has(selectedTeam)) {
+          setResources([]);
+        }
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -68,6 +81,7 @@ export function useTeamCapacity(tasks: TaskLike[], selectedTeam: DashboardTeamKe
 
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, [selectedTeam]);
 

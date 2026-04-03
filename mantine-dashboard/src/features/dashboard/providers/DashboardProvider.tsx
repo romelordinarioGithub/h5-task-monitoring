@@ -156,6 +156,7 @@ export function DashboardProvider({ children }: PropsWithChildren) {
     setCurrentPage(1);
   }, [
     selectedTeam,
+    debouncedTaskName,
     serverTaskType,
     filters.channel,
     filters.status,
@@ -181,7 +182,8 @@ export function DashboardProvider({ children }: PropsWithChildren) {
           selectedTeam,
           {
             page: currentPage,
-            limit: 15,
+            limit: 20,
+            search: debouncedTaskName || undefined,
             taskType: serverTaskType || undefined,
             channel: filters.channel,
             status: filters.status,
@@ -232,6 +234,7 @@ export function DashboardProvider({ children }: PropsWithChildren) {
     };
   }, [
     currentPage,
+    debouncedTaskName,
     selectedTeam,
     serverTaskType,
     filters.channel,
@@ -240,16 +243,7 @@ export function DashboardProvider({ children }: PropsWithChildren) {
   ]);
 
   const filteredTasks = useMemo(() => {
-    const normalizedTaskName = debouncedTaskName.toLowerCase();
-
     return tasks.filter((task) => {
-      if (
-        normalizedTaskName &&
-        !task.name.toLowerCase().includes(normalizedTaskName)
-      ) {
-        return false;
-      }
-
       if (filters.health !== 'All' && task.health !== filters.health) {
         return false;
       }
@@ -265,7 +259,7 @@ export function DashboardProvider({ children }: PropsWithChildren) {
 
       return true;
     });
-  }, [debouncedTaskName, filters.assignee, filters.health, tasks]);
+  }, [filters.assignee, filters.health, tasks]);
 
   const {
     availableResources,
