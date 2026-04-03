@@ -184,18 +184,14 @@ export function TaskViewSection() {
 
   const isTeamSwitching = previousSelectedTeamRef.current !== selectedTeam;
   const isInitialLoading =
-    isTasksLoading &&
-    !taskError &&
-    (!hasFinishedFirstLoadRef.current || isTeamSwitching);
+    isTasksLoading && !taskError && (!hasFinishedFirstLoadRef.current || isTeamSwitching);
   const isFilterPending =
     !taskError &&
     !isInitialLoading &&
     (isTaskNameFilterPending || (isTasksLoading && !isLoadingMoreTasks));
   const showFilterPendingSkeleton = isFilterPending;
   const showLoadMoreSkeleton =
-    !taskError &&
-    !showFilterPendingSkeleton &&
-    (isTasksLoading || isLoadingMoreTasks);
+    !taskError && !showFilterPendingSkeleton && (isTasksLoading || isLoadingMoreTasks);
   const showNoTasksMatchMessage =
     filteredTasks.length === 0 &&
     !taskError &&
@@ -206,7 +202,7 @@ export function TaskViewSection() {
     <Box className="dashboard-work-main">
       <Card withBorder radius="md" padding="lg" className="task-view-card">
         {isInitialLoading ? (
-          <TaskViewSectionSkeleton />
+          <TaskViewSectionSkeleton tableHeight={taskTableHeight} />
         ) : (
           <>
             <Text className="section-kicker">Task Queue</Text>
@@ -285,9 +281,11 @@ export function TaskViewSection() {
               />
 
               <Autocomplete
-                label="Assigned Dev"
+                label="Assignees"
                 data={filterOptions.assignee}
-                placeholder={isTeamCapacityLoading ? 'Loading devs...' : 'Type a dev name'}
+                placeholder={
+                  isTeamCapacityLoading ? 'Loading assignees...' : 'Type a name'
+                }
                 value={filters.assignee}
                 onChange={(value) =>
                   setFilters((current) => ({ ...current, assignee: value }))
@@ -322,7 +320,7 @@ export function TaskViewSection() {
                       <Table.Th>Health</Table.Th>
                       <Table.Th>Status</Table.Th>
                       <Table.Th>Priority</Table.Th>
-                      <Table.Th>Assigned Dev</Table.Th>
+                      <Table.Th>Assignees</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
 
@@ -377,9 +375,7 @@ export function TaskViewSection() {
                           </Table.Tr>
                         ))}
 
-                        {showLoadMoreSkeleton ? (
-                          <TaskViewLazySkeleton />
-                        ) : null}
+                        {showLoadMoreSkeleton ? <TaskViewLazySkeleton /> : null}
 
                         {showNoTasksMatchMessage ? (
                           <Table.Tr>
