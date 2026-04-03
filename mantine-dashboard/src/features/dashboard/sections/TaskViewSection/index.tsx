@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Autocomplete,
   Badge,
@@ -47,6 +47,10 @@ export function TaskViewSection() {
   );
   const pauseLazyLoadForTaskName =
     Boolean(selectedTaskNameOption) && filters.taskName === selectedTaskNameOption;
+  const taskNameOptions = useMemo(
+    () => Array.from(new Set(filteredTasks.map((task) => task.name).filter(Boolean))),
+    [filteredTasks],
+  );
 
   useEffect(() => {
     if (!filters.taskName.trim()) {
@@ -177,8 +181,17 @@ export function TaskViewSection() {
   const isFilterPending =
     !taskError &&
     !isInitialLoading &&
-    !pauseLazyLoadForTaskName &&
     (isTaskNameFilterPending || (isTasksLoading && !isLoadingMoreTasks));
+  const showFilterPendingSkeleton = isFilterPending;
+  const showLoadMoreSkeleton =
+    !taskError &&
+    !showFilterPendingSkeleton &&
+    (isTasksLoading || isLoadingMoreTasks);
+  const showNoTasksMatchMessage =
+    filteredTasks.length === 0 &&
+    !taskError &&
+    !showFilterPendingSkeleton &&
+    !showLoadMoreSkeleton;
 
   return (
     <Box className="dashboard-work-main">
@@ -205,7 +218,7 @@ export function TaskViewSection() {
             <SimpleGrid cols={{ base: 1, md: 2, xl: 6 }} mt="lg" className="task-filters">
               <Autocomplete
                 label="Task Name"
-                data={filteredTasks.map((task) => task.name)}
+                data={taskNameOptions}
                 placeholder="Search a task"
                 value={filters.taskName}
                 onChange={(value) => {
@@ -304,7 +317,7 @@ export function TaskViewSection() {
                           </Text>
                         </Table.Td>
                       </Table.Tr>
-                    ) : isFilterPending ? (
+                    ) : showFilterPendingSkeleton ? (
                       <TaskViewLazySkeleton />
                     ) : (
                       <>
@@ -346,14 +359,11 @@ export function TaskViewSection() {
                           </Table.Tr>
                         ))}
 
-                        {(isTasksLoading || isLoadingMoreTasks) &&
-                        !pauseLazyLoadForTaskName ? (
+                        {showLoadMoreSkeleton ? (
                           <TaskViewLazySkeleton />
                         ) : null}
 
-                        {filteredTasks.length === 0 &&
-                        !isTasksLoading &&
-                        !isTaskNameFilterPending ? (
+                        {showNoTasksMatchMessage ? (
                           <Table.Tr>
                             <Table.Td colSpan={7}>
                               <Text c="dimmed" ta="center" py="xl">

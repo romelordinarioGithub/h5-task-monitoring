@@ -144,6 +144,13 @@ export function DashboardProvider({ children }: PropsWithChildren) {
   const normalizedTaskName = filters.taskName.trim();
   const debouncedTaskName = useDebouncedValue(normalizedTaskName, 400);
   const isTaskNameFilterPending = normalizedTaskName !== debouncedTaskName;
+  const normalizedDebouncedTaskName = debouncedTaskName.trim().toLowerCase();
+  const hasExactLoadedTaskNameMatch = useMemo(
+    () =>
+      Boolean(normalizedDebouncedTaskName) &&
+      tasks.some((task) => task.name.trim().toLowerCase() === normalizedDebouncedTaskName),
+    [normalizedDebouncedTaskName, tasks],
+  );
 
   const serverTaskType = useMemo(() => {
     if (filters.taskType === 'All') return '';
@@ -152,11 +159,25 @@ export function DashboardProvider({ children }: PropsWithChildren) {
     return matched?.queryValue ?? matched?.apiKey ?? '';
   }, [filters.taskType, selectedTeam]);
 
+  const hasActiveServerSideFilters = useMemo(
+    () =>
+      Boolean(serverTaskType) ||
+      filters.channel !== 'All' ||
+      filters.status !== 'All' ||
+      filters.priority !== 'All',
+    [filters.channel, filters.priority, filters.status, serverTaskType],
+  );
+  const shouldKeepTaskSearchClientSide =
+    Boolean(normalizedDebouncedTaskName) &&
+    hasExactLoadedTaskNameMatch &&
+    !hasActiveServerSideFilters;
+  const effectiveServerTaskNameSearch = shouldKeepTaskSearchClientSide ? '' : debouncedTaskName;
+
   useEffect(() => {
     setCurrentPage(1);
   }, [
     selectedTeam,
-    debouncedTaskName,
+    effectiveServerTaskNameSearch,
     serverTaskType,
     filters.channel,
     filters.status,
@@ -167,6 +188,16 @@ export function DashboardProvider({ children }: PropsWithChildren) {
     const controller = new AbortController();
     let cancelled = false;
     const isLoadMore = currentPage > 1;
+
+    if (currentPage === 1 && shouldKeepTaskSearchClientSide) {
+      setTaskError(null);
+      setIsTasksLoading(false);
+      setIsLoadingMoreTasks(false);
+      return () => {
+        cancelled = true;
+        controller.abort();
+      };
+    }
 
     async function loadTasks() {
       if (isLoadMore) {
@@ -183,7 +214,7 @@ export function DashboardProvider({ children }: PropsWithChildren) {
           {
             page: currentPage,
             limit: 20,
-            search: debouncedTaskName || undefined,
+            search: effectiveServerTaskNameSearch || undefined,
             taskType: serverTaskType || undefined,
             channel: filters.channel,
             status: filters.status,
@@ -234,8 +265,9 @@ export function DashboardProvider({ children }: PropsWithChildren) {
     };
   }, [
     currentPage,
-    debouncedTaskName,
+    effectiveServerTaskNameSearch,
     selectedTeam,
+    shouldKeepTaskSearchClientSide,
     serverTaskType,
     filters.channel,
     filters.status,
@@ -243,7 +275,16 @@ export function DashboardProvider({ children }: PropsWithChildren) {
   ]);
 
   const filteredTasks = useMemo(() => {
+    const normalizedTaskName = debouncedTaskName.toLowerCase();
+
     return tasks.filter((task) => {
+      if (
+        normalizedTaskName &&
+        !task.name.toLowerCase().includes(normalizedTaskName)
+      ) {
+        return false;
+      }
+
       if (filters.health !== 'All' && task.health !== filters.health) {
         return false;
       }
@@ -259,7 +300,7 @@ export function DashboardProvider({ children }: PropsWithChildren) {
 
       return true;
     });
-  }, [filters.assignee, filters.health, tasks]);
+  }, [debouncedTaskName, filters.assignee, filters.health, tasks]);
 
   const {
     availableResources,
