@@ -81,7 +81,7 @@ export function FocusedViewSection() {
               ) : null}
             </Group>
 
-            <Title order={3} mt="sm">
+            <Title order={3} mt="sm" className="selected-task-title">
               {selectedTask.name}
             </Title>
 

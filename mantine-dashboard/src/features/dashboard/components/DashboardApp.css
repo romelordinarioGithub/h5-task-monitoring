@@ -118,6 +118,7 @@
   display: flex;
   align-items: flex-start;
   margin-top: var(--mantine-spacing-lg);
+  flex: 1 1 auto;
 }
 
 .kpi-carousel-grid {
@@ -140,11 +141,11 @@
 
 .kpi-carousel-placeholder {
   visibility: hidden;
-  min-height: 184px;
+  min-height: 196px;
 }
 
 .kpi-carousel-card {
-  height: 184px;
+  height: 196px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -169,7 +170,7 @@
 .kpi-carousel-title {
   font-size: 0.96rem;
   line-height: 1.35;
-  min-height: 2.6em;
+  min-height: 2.9em;
 }
 
 .kpi-carousel-value {
@@ -182,6 +183,12 @@
 
 .kpi-carousel-dots {
   min-height: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+.kpi-panel-card .kpi-carousel-dots {
+  margin-top: auto;
 }
 
 .kpi-carousel-dot {
@@ -203,7 +210,7 @@
 }
 
 .kpi-carousel-dot.is-active {
-  background: #6f48ff;
+  background: #be4bdb;
   width: 24px;
 }
 
@@ -236,9 +243,23 @@
   border: 1px solid rgba(225, 230, 242, 0.98);
 }
 
+.top-row-kpi,
+.top-row-ticket,
+.top-row-recent {
+  display: flex;
+  align-self: stretch;
+}
+
+.top-row-kpi > .mantine-Card-root,
+.top-row-ticket > .mantine-Card-root,
+.top-row-recent > .mantine-Card-root {
+  flex: 1 1 auto;
+}
+
 .top-panel-card {
   display: flex;
   flex-direction: column;
+  height: 100%;
   min-height: 0;
 }
 
@@ -424,31 +445,31 @@
 }
 
 .task-col-name {
-  width: 288px;
+  width: 240px;
 }
 
 .task-col-type {
-  width: 164px;
+  width: 144px;
 }
 
 .task-col-channel {
-  width: 88px;
+  width: 72px;
 }
 
 .task-col-health {
-  width: 108px;
+  width: 100px;
 }
 
 .task-col-status {
-  width: 146px;
+  width: 132px;
 }
 
 .task-col-priority {
-  width: 118px;
+  width: 110px;
 }
 
 .task-col-assignee {
-  width: 160px;
+  width: 148px;
 }
 
 .task-table thead {
@@ -460,23 +481,23 @@
 
 .task-table th:first-child,
 .task-table td:first-child {
-  width: 288px;
-  max-width: 288px;
+  width: 240px;
+  max-width: 240px;
 }
 
 .task-table th:nth-child(5),
 .task-table td:nth-child(5) {
-  width: 146px;
+  width: 132px;
 }
 
 .task-table th:nth-child(6),
 .task-table td:nth-child(6) {
-  width: 118px;
+  width: 110px;
 }
 
 .task-table th:nth-child(7),
 .task-table td:nth-child(7) {
-  width: 160px;
+  width: 148px;
 }
 
 .task-queue-truncate {
@@ -525,6 +546,7 @@
 .selected-task-hero {
   background: linear-gradient(180deg, #ffffff 0%, #faf8ff 100%);
   border: 1px solid rgba(225, 230, 242, 0.98);
+  min-width: 0;
 }
 
 .selected-task-link {
@@ -538,6 +560,12 @@
 
 .selected-task-link__inner {
   color: inherit;
+}
+
+.selected-task-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .theme-dark {
@@ -689,7 +717,7 @@
   }
 
   .kpi-carousel-card {
-    height: 164px;
+    height: 176px;
     padding: 12px;
   }
 
@@ -704,8 +732,8 @@
   }
 
   .kpi-carousel-title {
-    font-size: 0.82rem;
-    min-height: 2.35em;
+    font-size: 0.96rem;
+    min-height: 2.9em;
   }
 
   .kpi-carousel-value {
@@ -718,7 +746,73 @@
 
   .kpi-carousel-card .mantine-Group-root:last-of-type {
     margin-top: auto !important;
-    padding-bottom: 4px;
+    padding-bottom: 10px;
+  }
+
+  .kpi-carousel-dot {
+    width: 9px;
+    height: 9px;
+  }
+
+  .kpi-carousel-dot.is-active {
+    width: 22px;
+  }
+}
+
+@media (min-width: 105.01em) {
+  .kpi-carousel-header {
+    gap: 10px;
+  }
+
+  .kpi-carousel-count {
+    padding-inline: 10px;
+    font-size: 0.78rem;
+  }
+
+  .kpi-carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .kpi-carousel-stage {
+    min-height: 312px;
+  }
+
+  .kpi-carousel-grid {
+    gap: 10px;
+  }
+
+  .kpi-carousel-card {
+    height: 176px;
+    padding: 12px;
+  }
+
+  .kpi-carousel-icon {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .kpi-carousel-load {
+    padding-inline: 10px;
+    font-size: 0.76rem;
+  }
+
+  .kpi-carousel-title {
+    font-size: 0.96rem;
+    min-height: 2.9em;
+  }
+
+  .kpi-carousel-value {
+    font-size: clamp(1.7rem, 2vw, 2rem);
+  }
+
+  .kpi-carousel-unit {
+    font-size: 0.82rem;
+  }
+
+  .kpi-carousel-card .mantine-Group-root:last-of-type {
+    margin-top: auto !important;
+    padding-bottom: 10px;
   }
 
   .kpi-carousel-dot {
