@@ -191,7 +191,9 @@ export function TaskViewSection() {
     (isTaskNameFilterPending || (isTasksLoading && !isLoadingMoreTasks));
   const showFilterPendingSkeleton = isFilterPending;
   const showLoadMoreSkeleton =
-    !taskError && !showFilterPendingSkeleton && (isTasksLoading || isLoadingMoreTasks);
+    !taskError &&
+    !showFilterPendingSkeleton &&
+    (isTasksLoading || isLoadingMoreTasks);
   const showNoTasksMatchMessage =
     filteredTasks.length === 0 &&
     !taskError &&
@@ -374,8 +376,9 @@ export function TaskViewSection() {
                             </Table.Td>
                           </Table.Tr>
                         ))}
-
-                        {showLoadMoreSkeleton ? <TaskViewLazySkeleton /> : null}
+                        {showLoadMoreSkeleton ? (
+                          <TaskViewLazySkeleton />
+                        ) : null}
 
                         {showNoTasksMatchMessage ? (
                           <Table.Tr>
