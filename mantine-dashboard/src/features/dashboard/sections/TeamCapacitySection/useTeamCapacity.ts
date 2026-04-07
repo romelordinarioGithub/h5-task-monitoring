@@ -64,7 +64,7 @@ export function useTeamCapacity(tasks: TaskLike[], selectedTeam: DashboardTeamKe
         const mapped: DevResource[] = [];
 
         for (const item of data) {
-          const resource = mapDevResource(item, excludedUserIds);
+          const resource = mapDevResource(item, excludedUserIds, selectedTeam);
           if (resource) mapped.push(resource);
         }
 

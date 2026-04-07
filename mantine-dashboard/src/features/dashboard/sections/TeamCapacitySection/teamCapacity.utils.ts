@@ -1,4 +1,5 @@
-import { RawDevResource } from '../../services/dashboard.types';
+import { DASHBOARD_TEAMS } from '../../services/dashboard.config';
+import type { DashboardTeamKey, RawDevResource } from '../../services/dashboard.types';
 
 export type DevResource = {
   id: number;
@@ -12,7 +13,6 @@ export type DevResource = {
   timeZone: string;
 };
 
-const TEAM_NAME = 'H5 Team';
 const IN_PROGRESS = 'In Progress';
 const AVAILABLE = 'Available';
 
@@ -229,6 +229,7 @@ export function isWithinScheduleAndTime(
 export function mapDevResource(
   item: RawDevResource,
   excludedUserIds: ReadonlySet<number>,
+  selectedTeam: DashboardTeamKey,
 ): DevResource | null {
   const id = Number(item?.user_id);
   if (!Number.isFinite(id) || excludedUserIds.has(id)) return null;
@@ -246,7 +247,7 @@ export function mapDevResource(
   return {
     id,
     name,
-    team: TEAM_NAME,
+    team: DASHBOARD_TEAMS[selectedTeam]?.name ?? '',
     status,
     utilization,
     trend: utilization >= 60 ? 'high' : 'low',
