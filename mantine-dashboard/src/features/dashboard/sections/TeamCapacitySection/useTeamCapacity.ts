@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { fetchTeamResources } from '@/features/dashboard/services/dashboardQueries';
+import { getDashboardTeamConfig } from '@/features/dashboard/services/dashboard.config';
 import type { DashboardTeamKey, RawDevResource } from '../../services/dashboard.types';
 import {
   type DevResource,
@@ -21,6 +22,10 @@ export function useTeamCapacity(tasks: TaskLike[], selectedTeam: DashboardTeamKe
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [nowTick, setNowTick] = useState(() => Date.now());
+  const excludedUserIds = useMemo(
+    () => new Set(getDashboardTeamConfig(selectedTeam).excludedUserIds),
+    [selectedTeam],
+  );
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -59,7 +64,7 @@ export function useTeamCapacity(tasks: TaskLike[], selectedTeam: DashboardTeamKe
         const mapped: DevResource[] = [];
 
         for (const item of data) {
-          const resource = mapDevResource(item);
+          const resource = mapDevResource(item, excludedUserIds);
           if (resource) mapped.push(resource);
         }
 
@@ -83,7 +88,7 @@ export function useTeamCapacity(tasks: TaskLike[], selectedTeam: DashboardTeamKe
       cancelled = true;
       controller.abort();
     };
-  }, [selectedTeam]);
+  }, [excludedUserIds, selectedTeam]);
 
   const availableResources = useMemo(() => {
     const inProgressAssignees = new Set<string>();

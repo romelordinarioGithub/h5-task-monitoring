@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Autocomplete,
   Badge,
@@ -42,11 +42,16 @@ export function TaskViewSection() {
 
   const hasFinishedFirstLoadRef = useRef(false);
   const hasUserScrolledTableRef = useRef(false);
+  const previousSelectedTeamRef = useRef(selectedTeam);
   const [selectedTaskNameOption, setSelectedTaskNameOption] = useState<string | null>(
     null,
   );
   const pauseLazyLoadForTaskName =
     Boolean(selectedTaskNameOption) && filters.taskName === selectedTaskNameOption;
+  const taskNameOptions = useMemo(
+    () => Array.from(new Set(filteredTasks.map((task) => task.name).filter(Boolean))),
+    [filteredTasks],
+  );
 
   useEffect(() => {
     if (!filters.taskName.trim()) {
@@ -57,7 +62,6 @@ export function TaskViewSection() {
   useEffect(() => {
     hasUserScrolledTableRef.current = false;
   }, [
-    selectedTeam,
     filters.taskName,
     filters.taskType,
     filters.channel,
@@ -66,6 +70,12 @@ export function TaskViewSection() {
     filters.priority,
     filters.assignee,
   ]);
+
+  useEffect(() => {
+    hasFinishedFirstLoadRef.current = false;
+    hasUserScrolledTableRef.current = false;
+    previousSelectedTeamRef.current = selectedTeam;
+  }, [selectedTeam]);
 
   useEffect(() => {
     if (!isTasksLoading) {
@@ -172,8 +182,9 @@ export function TaskViewSection() {
     taskTableHeight,
   ]);
 
+  const isTeamSwitching = previousSelectedTeamRef.current !== selectedTeam;
   const isInitialLoading =
-    isTasksLoading && !taskError && !hasFinishedFirstLoadRef.current;
+    isTasksLoading && !taskError && (!hasFinishedFirstLoadRef.current || isTeamSwitching);
   const isFilterPending =
     !taskError &&
     !isInitialLoading &&
@@ -193,7 +204,7 @@ export function TaskViewSection() {
     <Box className="dashboard-work-main">
       <Card withBorder radius="md" padding="lg" className="task-view-card">
         {isInitialLoading ? (
-          <TaskViewSectionSkeleton />
+          <TaskViewSectionSkeleton tableHeight={taskTableHeight} />
         ) : (
           <>
             <Text className="section-kicker">Task Queue</Text>
@@ -214,7 +225,7 @@ export function TaskViewSection() {
             <SimpleGrid cols={{ base: 1, md: 2, xl: 6 }} mt="lg" className="task-filters">
               <Autocomplete
                 label="Task Name"
-                data={filteredTasks.map((task) => task.name)}
+                data={taskNameOptions}
                 placeholder="Search a task"
                 value={filters.taskName}
                 onChange={(value) => {
@@ -272,9 +283,11 @@ export function TaskViewSection() {
               />
 
               <Autocomplete
-                label="Assigned Dev"
+                label="Assignees"
                 data={filterOptions.assignee}
-                placeholder={isTeamCapacityLoading ? 'Loading devs...' : 'Type a dev name'}
+                placeholder={
+                  isTeamCapacityLoading ? 'Loading assignees...' : 'Type a name'
+                }
                 value={filters.assignee}
                 onChange={(value) =>
                   setFilters((current) => ({ ...current, assignee: value }))
@@ -292,6 +305,15 @@ export function TaskViewSection() {
             >
               <Table.ScrollContainer minWidth={920} h="100%">
                 <Table highlightOnHover verticalSpacing="md" className="task-table">
+                  <colgroup>
+                    <col className="task-col-name" />
+                    <col className="task-col-type" />
+                    <col className="task-col-channel" />
+                    <col className="task-col-health" />
+                    <col className="task-col-status" />
+                    <col className="task-col-priority" />
+                    <col className="task-col-assignee" />
+                  </colgroup>
                   <Table.Thead>
                     <Table.Tr>
                       <Table.Th>Task Name</Table.Th>
@@ -300,7 +322,7 @@ export function TaskViewSection() {
                       <Table.Th>Health</Table.Th>
                       <Table.Th>Status</Table.Th>
                       <Table.Th>Priority</Table.Th>
-                      <Table.Th>Assigned Dev</Table.Th>
+                      <Table.Th>Assignees</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
 
@@ -354,7 +376,6 @@ export function TaskViewSection() {
                             </Table.Td>
                           </Table.Tr>
                         ))}
-
                         {showLoadMoreSkeleton ? (
                           <TaskViewLazySkeleton />
                         ) : null}

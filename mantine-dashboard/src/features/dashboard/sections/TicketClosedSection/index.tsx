@@ -11,8 +11,8 @@ export function TicketClosedSection() {
   const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   return (
-    <Grid.Col span={{ base: 12, md: 6, xl: 3 }}>
-      <Card withBorder radius="md" padding="lg" h="100%">
+    <Grid.Col span={{ base: 12, md: 3 }} className="top-row-ticket">
+      <Card withBorder radius="md" padding="lg" className="top-panel-card ticket-panel-card">
         {isLoading ? (
           <TicketClosedSkeleton />
         ) : (
@@ -22,18 +22,18 @@ export function TicketClosedSection() {
               Ticket Closed
             </Title>
 
-            <Box mt="xl">
+            <Box mt="lg" className="ticket-panel-body">
               <Box className="ticket-card">
                 <RingProgress
-                  size={220}
+                  size={238}
                   thickness={18}
                   roundCaps
                   sections={[{ value: completionRate, color: 'grape.7' }]}
                   rootColor="gray.2"
                   style={
                     {
-                      '--rp-size': '220px',
-                      '--rp-label-offset': '36px',
+                      '--rp-size': '238px',
+                      '--rp-label-offset': '40px',
                     } as CSSProperties
                   }
                   label={
@@ -47,7 +47,7 @@ export function TicketClosedSection() {
                 />
               </Box>
 
-              <Text c="dimmed" size="sm" mt="xl">
+              <Text c="dimmed" size="sm" mt="lg">
                 {completed} tickets have been closed in this dashboard view, out of{' '}
                 {total} tracked items across closed and open workload.
               </Text>

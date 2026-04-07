@@ -7,7 +7,9 @@ export type DashboardTeamKey = 'production_h5' | 'design' | 'production_video' |
 export type DashboardTeamConfig = {
   key: DashboardTeamKey;
   name: string;
+  slug: string;
   path: string;
+  excludedUserIds: number[];
   icon: IconComponent;
   disabled: boolean;
 };

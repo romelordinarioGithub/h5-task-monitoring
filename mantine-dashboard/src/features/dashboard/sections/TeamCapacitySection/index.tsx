@@ -33,7 +33,7 @@ export function TeamCapacitySection() {
           <>
             <Text className="section-kicker">Team Capacity</Text>
             <Title order={3} mt={4}>
-              Available Dev Resource
+              Available Resource
             </Title>
 
             <Paper

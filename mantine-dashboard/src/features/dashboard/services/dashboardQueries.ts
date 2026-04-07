@@ -18,6 +18,7 @@ export function buildTaskViewQuery(query: TaskViewQuery): string {
 
   params.set('rel_type', 'task');
   params.set('filter', 'weekly');
+  params.set('sort', 'asc');
 
   if (query.limit) params.set('limit', String(query.limit));
   if (query.search?.trim()) {
@@ -26,7 +27,9 @@ export function buildTaskViewQuery(query: TaskViewQuery): string {
     params.set('task_name', normalizedSearch);
   }
   if (query.taskType?.trim()) params.set('task_type', query.taskType.trim());
-  if (query.channel && query.channel !== 'All') params.set('channel', query.channel);
+  if (query.channel && query.channel !== 'All') {
+    params.set('channel', normalizeFilterQueryValue(query.channel));
+  }
   if (query.status && query.status !== 'All') {
     params.set('status', normalizeFilterQueryValue(query.status));
   }
@@ -95,7 +98,7 @@ export async function fetchWeeklyTicketTotals(
     fetchPage<RawData>(
       1,
       `dashboard/${teamPath}`,
-      'rel_type=task&filter=weekly&status=completed,testing',
+      'rel_type=task&filter=weekly&status=completed',
       signal,
     ),
   ]);
@@ -130,4 +133,21 @@ export async function fetchTaskViewPage(
     buildTaskViewQuery(query),
     signal,
   );
+}
+
+/** Needs Attention - Hero Section */
+export async function fetchNeedsAttentionTasks(
+  team: DashboardTeamKey,
+  signal?: AbortSignal,
+): Promise<number> {
+  const teamPath = getDashboardTeamConfig(team).path;
+
+  const response = await fetchPage<RawData>(
+    1,
+    `dashboard/${teamPath}`,
+    'rel_type=task&filter=weekly&status=not_started,testing,on_hold,awaiting_feedback,client_review,for_handover&priority=high,urgent&limit=1',
+    signal,
+  );
+
+  return Number(response?.total ?? 0);
 }

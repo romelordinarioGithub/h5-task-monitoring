@@ -43,6 +43,10 @@ export function normalizeTaskStatus(value?: string | null): string {
       return 'In Progress';
     case 'awaiting feedback':
       return 'Awaiting Feedback';
+    case 'client review':
+      return 'Client Review';
+    case 'for handover':
+      return 'For Handover';
     case 'testing':
       return 'Testing';
     case 'completed':
@@ -74,6 +78,12 @@ export function normalizeTaskPriority(value?: string | null): string {
         ? normalized.replace(/\b\w/g, (char) => char.toUpperCase())
         : 'Unknown';
   }
+}
+
+export function formatChannelLabel(channel?: string | null): string {
+  const normalized = String(channel ?? '').trim();
+  if (!normalized) return 'Unknown';
+  return normalized.charAt(0).toUpperCase() + normalized.slice(1).toLowerCase();
 }
 
 export function formatAssigneeNames(assignees?: RawDataAssignee[]): string[] {

@@ -34,7 +34,7 @@ function DashboardAppContent() {
       <AppShell.Main className="dashboard-main-area">
         <HeroSection isDark={isDark} onToggleMode={toggleMode} />
 
-        <Grid mt="lg">
+        <Grid mt="lg" align="stretch">
           <KPISnapshotSection />
           <TicketClosedSection />
           <RecentUpdatesSection />

@@ -1,5 +1,7 @@
 import { Badge, Box, Group, Progress, Text } from '@mantine/core';
-import { healthConfig } from '../services/dashboard.utils';
+import { IconBrandMeta, IconBrandYoutubeFilled } from '@tabler/icons-react';
+import type { ReactElement } from 'react';
+import { formatChannelLabel, healthConfig } from '../services/dashboard.utils';
 
 const badgeColor: Record<string, string> = {
   healthy: 'teal',
@@ -20,12 +22,12 @@ const badgeColor: Record<string, string> = {
   'partially available': 'blue',
 };
 
-function ChannelIcon({ channel }: { channel: string }) {
-  if (
-    String(channel ?? '')
-      .toLowerCase()
-      .includes('google')
-  ) {
+function ChannelIcon({ channel }: { channel: string }): ReactElement | null {
+  const normalizedChannel = String(channel ?? '')
+    .trim()
+    .toLowerCase();
+
+  if (normalizedChannel.includes('google')) {
     return (
       <Box className="channel-mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" className="channel-mark__svg">
@@ -48,33 +50,46 @@ function ChannelIcon({ channel }: { channel: string }) {
         </svg>
       </Box>
     );
+  } else if (normalizedChannel.includes('youtube')) {
+    return (
+      <Box className="channel-mark" aria-hidden="true">
+        <IconBrandYoutubeFilled size={20} stroke={1.8} color="#FF0000" />
+      </Box>
+    );
+  } else if (normalizedChannel.includes('facebook')) {
+    return (
+      <Box className="channel-mark" aria-hidden="true">
+        <IconBrandMeta size={20} stroke={1.8} color="#0866FF" />
+      </Box>
+    );
   }
 
   return (
     <Box className="channel-mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" className="channel-mark__svg">
-        <path
-          fill="#0866FF"
-          d="M19.18 7.24c-1.15 0-2.08.93-3.28 2.45-.62.79-1.27 1.77-1.9 2.79-.65-1.02-1.3-2-1.92-2.79-1.2-1.52-2.12-2.45-3.27-2.45-2.2 0-3.81 2.14-3.81 4.44 0 1.34.52 2.66 1.46 3.72.92 1.04 2.1 1.59 3.38 1.59.94 0 1.84-.32 2.67-.96.55-.43 1.06-.99 1.49-1.56.43.57.94 1.13 1.49 1.56.83.64 1.73.96 2.67.96 1.28 0 2.46-.55 3.38-1.59.94-1.06 1.46-2.38 1.46-3.72 0-2.3-1.61-4.44-3.82-4.44Zm-8.44 7.3c-.62.49-1.22.73-1.82.73-1.44 0-2.64-1.49-2.64-3.15 0-1.48.94-2.77 2.06-2.77.48 0 1.13.42 2.08 1.62.48.61.98 1.35 1.47 2.14-.34.5-.73 1-1.15 1.43Zm8.5.73c-.6 0-1.2-.24-1.82-.73-.42-.43-.81-.93-1.15-1.43.49-.79.99-1.53 1.47-2.14.95-1.2 1.6-1.62 2.08-1.62 1.12 0 2.06 1.29 2.06 2.77 0 1.66-1.2 3.15-2.64 3.15Z"
-        />
-      </svg>
+      <Text c="dimmed" fw={500} lh={1}>
+        —
+      </Text>
     </Box>
   );
 }
 
 export function ChannelCell({ channel }: { channel: string }) {
+  const label = formatChannelLabel(channel);
+
   return (
-    <Box title={channel}>
+    <Box title={label}>
       <ChannelIcon channel={channel} />
     </Box>
   );
 }
 
 export function ChannelDetail({ channel }: { channel: string }) {
+  const label = formatChannelLabel(channel);
+
   return (
     <Group gap="sm" wrap="nowrap">
       <ChannelIcon channel={channel} />
-      <Text fw={700}>{channel}</Text>
+      <Text fw={700}>{label}</Text>
     </Group>
   );
 }
