@@ -23,6 +23,7 @@ import {
 } from '../services/dashboard.config';
 import { fetchTaskViewPage } from '../services/dashboardQueries';
 import type { DashboardTeamKey } from '../services/dashboard.types';
+import { formatChannelLabel } from '../services/dashboard.utils';
 import { mapRawTaskToTask, type Task } from '../sections/TaskViewSection/taskView.utils';
 import { useTeamCapacity } from '../sections/TeamCapacitySection/useTeamCapacity';
 import type { DevResource } from '../sections/TeamCapacitySection/teamCapacity.utils';
@@ -51,7 +52,7 @@ type DashboardContextValue = {
   filters: Filters;
   setFilters: Dispatch<SetStateAction<Filters>>;
   filterOptions: {
-    channel: string[];
+    channel: Array<{ value: string; label: string }>;
     health: string[];
     status: string[];
     priority: string[];
@@ -326,6 +327,7 @@ export function DashboardProvider({ children }: PropsWithChildren) {
 
   const filteredTasks = useMemo(() => {
     const normalizedTaskName = debouncedTaskName.toLowerCase();
+    const normalizedChannelFilter = filters.channel.trim().toLowerCase();
 
     return tasks.filter((task) => {
       if (
@@ -336,6 +338,25 @@ export function DashboardProvider({ children }: PropsWithChildren) {
       }
 
       if (filters.health !== 'All' && task.health !== filters.health) {
+        return false;
+      }
+
+      if (filters.taskType !== 'All' && task.type !== filters.taskType) {
+        return false;
+      }
+
+      if (
+        filters.channel !== 'All' &&
+        task.channel.trim().toLowerCase() !== normalizedChannelFilter
+      ) {
+        return false;
+      }
+
+      if (filters.status !== 'All' && task.status !== filters.status) {
+        return false;
+      }
+
+      if (filters.priority !== 'All' && task.priority !== filters.priority) {
         return false;
       }
 
@@ -350,7 +371,16 @@ export function DashboardProvider({ children }: PropsWithChildren) {
 
       return true;
     });
-  }, [debouncedTaskName, filters.assignee, filters.health, tasks]);
+  }, [
+    debouncedTaskName,
+    filters.assignee,
+    filters.channel,
+    filters.health,
+    filters.priority,
+    filters.status,
+    filters.taskType,
+    tasks,
+  ]);
 
   const {
     availableResources,
@@ -361,7 +391,15 @@ export function DashboardProvider({ children }: PropsWithChildren) {
 
   const filterOptions = useMemo(
     () => ({
-      channel: ['All', ...new Set(tasks.map((task) => task.channel).filter(Boolean))],
+      channel: [
+        { value: 'All', label: 'All' },
+        ...Array.from(new Set(tasks.map((task) => task.channel).filter(Boolean))).map(
+          (channel) => ({
+            value: channel,
+            label: formatChannelLabel(channel),
+          }),
+        ),
+      ],
       health: TASK_HEALTH_OPTIONS,
       status: TASK_STATUS_OPTIONS,
       priority: TASK_PRIORITY_OPTIONS,

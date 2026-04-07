@@ -14,7 +14,9 @@ import {
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useDashboard } from '../../providers/DashboardProvider';
 import { KPISnapshotSkeleton } from './KPISnapshotSkeleton';
-import { useKPISnapshot } from './useKPISnapshot';
+import { useKPISnapshot, type TaskType } from './useKPISnapshot';
+
+type KPISlideItem = TaskType | null;
 
 export function KPISnapshotSection() {
   const { filters, setFilters } = useDashboard();
@@ -23,9 +25,9 @@ export function KPISnapshotSection() {
   const [autoPlayEnabled, setAutoPlayEnabled] = useState(true);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
 
-  const slides = useMemo(() => {
+  const slides = useMemo<TaskType[][]>(() => {
     const chunkSize = 6;
-    const pages = [];
+    const pages: TaskType[][] = [];
 
     for (let index = 0; index < taskTypes.length; index += chunkSize) {
       pages.push(taskTypes.slice(index, index + chunkSize));
@@ -54,7 +56,7 @@ export function KPISnapshotSection() {
   }, [autoPlayEnabled, slides.length]);
 
   const currentSlide = slides[activeSlide] ?? [];
-  const displaySlide =
+  const displaySlide: KPISlideItem[] =
     currentSlide.length >= 6
       ? currentSlide
       : [...currentSlide, ...Array.from({ length: 6 - currentSlide.length }, () => null)];
@@ -95,12 +97,22 @@ export function KPISnapshotSection() {
         ) : (
           <>
             <Text className="section-kicker">KPI Snapshot</Text>
-            <Group justify="space-between" align="center" mt={4} className="kpi-carousel-header">
+            <Group
+              justify="space-between"
+              align="center"
+              mt={4}
+              className="kpi-carousel-header"
+            >
               <Title order={3}>Task Type Summary</Title>
               <Group gap="xs" wrap="nowrap" className="kpi-carousel-controls">
-                <Badge color="gray" variant="light" radius="xl" className="kpi-carousel-count">
-                {taskTypes.length} task types
-              </Badge>
+                <Badge
+                  color="gray"
+                  variant="light"
+                  radius="xl"
+                  className="kpi-carousel-count"
+                >
+                  {taskTypes.length} task types
+                </Badge>
 
                 {slides.length > 1 ? (
                   <Group gap={8} wrap="nowrap">
@@ -137,7 +149,12 @@ export function KPISnapshotSection() {
               >
                 {displaySlide.map((type, index) => {
                   if (!type) {
-                    return <div key={`kpi-placeholder-${activeSlide}-${index}`} className="kpi-carousel-placeholder" />;
+                    return (
+                      <div
+                        key={`kpi-placeholder-${activeSlide}-${index}`}
+                        className="kpi-carousel-placeholder"
+                      />
+                    );
                   }
 
                   const share =

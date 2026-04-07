@@ -35,7 +35,7 @@ export const DASHBOARD_TEAMS: Record<DashboardTeamKey, DashboardTeamConfig> = {
     name: 'Design Team',
     slug: 'design-team',
     path: 'design',
-    excludedUserIds: [],
+    excludedUserIds: [103, 138, 886],
     icon: IconBrush,
     disabled: false,
   },
@@ -44,7 +44,7 @@ export const DASHBOARD_TEAMS: Record<DashboardTeamKey, DashboardTeamConfig> = {
     name: 'Video Dev Team',
     slug: 'video-team',
     path: 'production_video',
-    excludedUserIds: [],
+    excludedUserIds: [4, 135, 156, 888, 882],
     icon: IconPlayerTrackNext,
     disabled: false,
   },
@@ -53,7 +53,7 @@ export const DASHBOARD_TEAMS: Record<DashboardTeamKey, DashboardTeamConfig> = {
     name: 'QA Team',
     slug: 'qa-team',
     path: 'qa',
-    excludedUserIds: [],
+    excludedUserIds: [29, 941, 849, 885],
     icon: IconChecklist,
     disabled: false,
   },
@@ -72,7 +72,9 @@ export function getDashboardTeamSlug(team: DashboardTeamKey): string {
 }
 
 export function getDashboardTeamBySlug(slug?: string | null): DashboardTeamKey | null {
-  const normalizedSlug = String(slug ?? '').trim().toLowerCase();
+  const normalizedSlug = String(slug ?? '')
+    .trim()
+    .toLowerCase();
   if (!normalizedSlug) return null;
 
   const matchedTeam = dashboardTeams.find((team) => team.slug === normalizedSlug);

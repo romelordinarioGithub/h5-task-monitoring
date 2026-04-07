@@ -114,18 +114,22 @@
 }
 
 .kpi-carousel-stage {
-  min-height: 344px;
+  --kpi-card-height: 196px;
+  --kpi-stage-height: 408px;
+  min-height: var(--kpi-stage-height);
+  height: var(--kpi-stage-height);
   display: flex;
   align-items: flex-start;
   margin-top: var(--mantine-spacing-lg);
   flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .kpi-carousel-grid {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: repeat(2, auto);
+  grid-template-rows: repeat(2, var(--kpi-card-height));
   gap: var(--mantine-spacing-md);
   align-content: start;
   align-items: start;
@@ -141,11 +145,12 @@
 
 .kpi-carousel-placeholder {
   visibility: hidden;
-  min-height: 196px;
+  height: var(--kpi-card-height);
+  min-height: var(--kpi-card-height);
 }
 
 .kpi-carousel-card {
-  height: 196px;
+  height: var(--kpi-card-height);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -487,6 +492,7 @@
 
 .task-table th:nth-child(5),
 .task-table td:nth-child(5) {
+  padding-left: 30px;
   width: 132px;
 }
 
@@ -709,7 +715,10 @@
   }
 
   .kpi-carousel-stage {
-    min-height: 312px;
+    --kpi-card-height: 176px;
+    --kpi-stage-height: 362px;
+    min-height: var(--kpi-stage-height);
+    height: var(--kpi-stage-height);
   }
 
   .kpi-carousel-grid {
@@ -775,7 +784,10 @@
   }
 
   .kpi-carousel-stage {
-    min-height: 312px;
+    --kpi-card-height: 176px;
+    --kpi-stage-height: 362px;
+    min-height: var(--kpi-stage-height);
+    height: var(--kpi-stage-height);
   }
 
   .kpi-carousel-grid {
@@ -832,6 +844,8 @@
 
   .kpi-carousel-stage {
     min-height: auto;
+    height: auto;
+    overflow: visible;
   }
 
   .kpi-carousel-grid {

@@ -80,6 +80,12 @@ export function normalizeTaskPriority(value?: string | null): string {
   }
 }
 
+export function formatChannelLabel(channel?: string | null): string {
+  const normalized = String(channel ?? '').trim();
+  if (!normalized) return 'Unknown';
+  return normalized.charAt(0).toUpperCase() + normalized.slice(1).toLowerCase();
+}
+
 export function formatAssigneeNames(assignees?: RawDataAssignee[]): string[] {
   return (assignees ?? [])
     .map((assignee) => String(assignee?.name ?? '').trim())
