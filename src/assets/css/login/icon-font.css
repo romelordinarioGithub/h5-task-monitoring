@@ -1,0 +1,160 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('/src/assets/fonts/icomoon.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* Navigation */
+.icon-dev-btn:before {
+  content: "\e909";
+  color: var(--color-white);
+}
+.icon-des-btn:before {
+  content: "\e908";
+  color: var(--color-white);
+}
+.icon-vid-btn:before {
+  content: "\e920";
+  color: var(--color-white);
+}
+.icon-vid-all:before {
+  content: "\e91f";
+  color: var(--color-white);
+}
+.icon-vid-cpva:before {
+  content: "\e921";
+  color: var(--color-white);
+}
+.icon-qa-btn:before {
+  content: "\e919";
+  color: var(--color-white);
+}
+/* Icons */
+.icon-smartly:before {
+  content: "\e91d";
+  color: var(--color-white);
+}
+.icon-info:before {
+  content: "\e911";
+  color: var(--color-white);
+}
+.icon-fire:before {
+  content: "\e90c";
+  color: var(--color-gold);
+}
+/* Utility Icons */
+.icon-dots:before {
+  content: "\e90a";
+  color: var(--color-primary);
+}
+.icon-caret:before {
+  content: "\e904";
+}
+.icon-caret-down:before {
+  content: "\e902";
+  color: var(--color-red);
+}
+.icon-caret-up:before {
+  content: "\e903";
+  color: var(--color-green);
+}
+.icon-refresh:before {
+  content: "\e91b";
+  color: var(--color-primary-100);
+}
+.icon-bin:before {
+  content: "\e900";
+}
+.icon-cancel-circle:before {
+  content: "\e901";
+}
+.icon-checkmark:before {
+  content: "\e905";
+}
+.icon-cog:before {
+  content: "\e906";
+}
+.icon-cross:before {
+  content: "\e907";
+}
+.icon-exit:before {
+  content: "\e90b";
+}
+.icon-menu:before {
+  content: "\e912";
+}
+.icon-minus:before {
+  content: "\e916";
+}
+.icon-pencil:before {
+  content: "\e917";
+}
+.icon-plus:before {
+  content: "\e918";
+}
+.icon-question:before {
+  content: "\e91a";
+}
+.icon-search:before {
+  content: "\e91c";
+}
+.icon-users:before {
+  content: "\e91e";
+}
+.icon-warning:before {
+  content: "\e922";
+}
+/* Channels */
+.icon-google .path1:before {
+  content: "\e90d";
+  color: rgb(66, 133, 244);
+}
+.icon-google .path2:before {
+  content: "\e90e";
+  margin-left: -1em;
+  color: rgb(52, 168, 83);
+}
+.icon-google .path3:before {
+  content: "\e90f";
+  margin-left: -1em;
+  color: rgb(251, 188, 5);
+}
+.icon-google .path4:before {
+  content: "\e910";
+  margin-left: -1em;
+  color: rgb(234, 67, 53);
+}
+.icon-meta .path1:before {
+  content: "\e913";
+  color: rgb(0, 129, 251);
+}
+.icon-meta .path2:before {
+  content: "\e914";
+  margin-left: -1em;
+  color: rgb(0, 100, 225);
+}
+.icon-meta .path3:before {
+  content: "\e915";
+  margin-left: -1em;
+  color: rgb(0, 130, 251);
+}
+.icon-youtube:before {
+  content: "\e923";
+  color: rgb(255, 61, 0);
+}

@@ -1,0 +1,1720 @@
+const schema = {
+  id: 'adweave',
+  title: 'Global Intake Form',
+  pages: [
+    // Main Page
+    {
+      id: 'main_page',
+      title: 'Submit Creative Requests to Smartly',
+      fields: [
+        {
+          id: 'user_email',
+          type: 'text',
+          label: 'Email',
+          placeholder: 'Enter your email address',
+          isRequired: true,
+        },
+        {
+          id: 'title',
+          type: 'text',
+          label: 'Project Name',
+          placeholder: 'Enter here',
+          validators: ['maxChars:70'],
+          isRequired: true,
+        },
+        {
+          id: 'company_name',
+          type: 'single_select_popup',
+          label: 'Company/Brand',
+          placeholder: 'No items selected',
+          popupInputPlaceholder: 'Enter here',
+          allowCustom: true,
+          isRequired: true,
+          options: [
+            { id: 'nike', value: 'Nike' },
+            { id: 'disney_plus', value: 'Disney+' },
+          ],
+        },
+        {
+          id: 'customer_tier',
+          type: 'single_select',
+          label: 'Customer Tier',
+          isRequired: true,
+          isCompact: true,
+          options: [
+            {
+              id: 'tier_1',
+              value:
+                'Tier 1',
+            },
+            {
+              id: 'tier_2',
+              value:
+                'Tier 2',
+            },
+            {
+              id: 'tier_3',
+              value:
+                'Tier 3',
+            },
+            {
+              id: 'not_applicable',
+              value:
+                'Not Applicable',
+            },
+          ],
+        },
+        {
+          id: 'region',
+          type: 'single_select',
+          label: 'Region',
+          isRequired: true,
+          isCompact: true,
+          options: [
+            {
+              id: 'apac',
+              value:
+                'APAC',
+            },
+            {
+              id: 'europe',
+              value:
+                'Europe',
+            },
+            {
+              id: 'latam',
+              value:
+                'LatAm',
+            },
+            {
+              id: 'mena',
+              value:
+                'MENA',
+            },
+            {
+              id: 'noram',
+              value:
+                'NorAm',
+            },
+          ],
+        },
+        {
+          id: 'creative_project_goals',
+          type: 'long_text',
+          label: 'Please tell us about your creative project and goals',
+          placeholder:
+            'Describe the campaign you need creatives for and what you hope to achieve',
+          isRequired: true,
+        },
+        {
+          id: 'markets',
+          type: 'multi_select_popup',
+          label: 'Target Markets',
+          description: 'Select markets',
+          placeholder: 'No items selected',
+          isRequired: true,
+          options: [
+            { id: 'PH', value: 'Philippines' },
+            { id: 'US', value: 'United States' },
+            { id: 'UK', value: 'United Kingdom' },
+            { id: 'CA', value: 'Canada' },
+            { id: 'AU', value: 'Australia' },
+          ],
+        },
+        {
+          id: 'languages',
+          type: 'multi_select_popup',
+          label: 'Languages',
+          description: 'Select languages',
+          placeholder: 'No items selected',
+          isRequired: true,
+          options: [
+            { id: 'en', value: 'English' },
+            { id: 'es', value: 'Spanish' },
+            { id: 'fr', value: 'French' },
+            { id: 'de', value: 'German' },
+            { id: 'zh', value: 'Chinese' },
+          ],
+        },
+        {
+          id: 'campaign_delivery_date',
+          type: 'date',
+          label: 'Estimated Delivery Date',
+        },
+        {
+          id: 'campaign_end_date',
+          type: 'date',
+          label: 'Estimated Campaign End Date',
+          toggleFieldId: 'campaign_end_date_flag',
+          toggleLabel: 'Always On',
+        },
+        {
+          id: 'assets',
+          type: 'multi_text',
+          label: 'Assets',
+          description: 'Provide asset URLs (one per input)',
+          isRequired: true,
+          validators: ['url'],
+        },
+        {
+          id: 'assets_instructions',
+          type: 'text',
+          label: 'Assets Instructions',
+          isRequired: true,
+        },
+        {
+          id: 'request_type',
+          type: 'single_select',
+          label: 'Contract Type',
+          isRequired: true,
+          options: [
+            {
+              id: 'creative_suite',
+              value: 'Creative Suite',
+            },
+            { id: 'sparkworks', value: 'Sparkworks' },
+            { id: 'non_creative_contract', value: "No Existing Creative Contract" }
+          ],
+        },
+      ],
+    },
+
+    // Creative Suite
+    {
+      id: 'creative_suite_page',
+      parentId: 'brief',
+      title: 'Creative Suite',
+      showIf: { q: 'request_type', op: 'eq', value: 'creative_suite' },
+      fields: [
+        {
+          id: "needs_concepting",
+          type: "single_select",
+          label: "Do you need concepting?",
+          isRequired: true,
+          options: [
+            { id: "yes", value: "Yes" },
+            { id: "no", value: "No" }
+          ]
+        }
+      ]
+    },
+
+    // Creative Suite - No need concepting
+    {
+      id: 'creative_suite_no_concepting_page',
+      parentId: 'brief',
+      showIf: { q: 'needs_concepting', op: 'eq', value: 'no' },
+      fields: [
+        {
+          id: 'dynamic_elements',
+          type: 'long_text',
+          label: 'Dynamic Elements',
+          placeholder:
+            'Enter here...',
+        },
+        {
+          id: 'advance_features',
+          type: 'long_text',
+          label: 'Advance Features',
+          placeholder:
+            'Enter here...',
+        },
+        {
+          id: 'animations',
+          type: 'long_text',
+          label: 'Animations',
+          placeholder:
+            'Enter here...',
+        },
+        {
+          id: 'existing_creative_templates',
+          type: 'single_select',
+          label: 'Will this project be built on existing creative templates?',
+          isRequired: true,
+          options: [
+            {
+              id: 'scratch_raw_assets',
+              value:
+                'We’re starting from scratch and I only have raw assets to share (images, video, brand guidelines, etc.)',
+              price: '12000',
+            },
+            {
+              id: 'scratch_working_files',
+              value:
+                'We’re starting from scratch but I have layered working files (PSD or Figma)',
+            },
+            {
+              id: 'reusing_existing_templates',
+              value: 'Yes, we’re reusing / updating existing templates',
+            },
+          ],
+        },
+      ]
+    },
+
+    // Stage Funnel
+    {
+      id: 'stage_funnel_page',
+      parentId: 'brief',
+      showIf: {
+        any:
+          [
+            { q: 'request_type', op: 'eq', value: 'sparkworks' },
+            { q: 'needs_concepting', op: 'eq', value: 'yes' }
+          ],
+      },
+      fields: [
+        {
+          id: 'stage_funnel_targeting',
+          type: 'multi_select',
+          label: 'What stage of the funnel is your creative project targeting?',
+          isRequired: true,
+          options: [
+            { id: 'UF', value: 'Upper Funnel (Awareness / Reach)' },
+            { id: 'MF', value: 'Middle Funnel (Consideration / Engagement)' },
+            {
+              id: 'LF',
+              value: 'Lower Funnel (Retargeting / Personalization)',
+            },
+            { id: 'FF', value: 'Full Funnel Targeting' },
+          ],
+        },
+        {
+          id: 'existing_creative_templates',
+          type: 'single_select',
+          label: 'Will this project be built on existing creative templates?',
+          isRequired: true,
+          options: [
+            {
+              id: 'scratch_raw_assets',
+              value:
+                'We’re starting from scratch and I only have raw assets to share (images, video, brand guidelines, etc.)',
+              price: '12000',
+            },
+            {
+              id: 'scratch_working_files',
+              value:
+                'We’re starting from scratch but I have layered working files (PSD or Figma)',
+            },
+            {
+              id: 'reusing_existing_templates',
+              value: 'Yes, we’re reusing / updating existing templates',
+            },
+          ],
+        },
+      ]
+    },
+
+    // Scratch - Platforms advertising on
+    {
+      id: 'scratch_platforms_advertising_on_page',
+      parentId: 'brief',
+      title: 'For which platform do you need the creatives for?',
+      showIf: {
+        all: [
+          {
+            q: 'existing_creative_templates',
+            op: 'in',
+            value: ["scratch_raw_assets", "scratch_working_files"],
+          },
+        ],
+      },
+      fields: [
+        {
+          id: 'newsize_platforms_advertising_on',
+          type: 'multi_select',
+          label: 'Channels',
+          description: 'Select all that apply',
+          isRequired: true,
+          options: [
+            { id: 'meta', value: 'Meta' },
+            { id: 'tiktok', value: 'TikTok' },
+            { id: 'snapchat', value: 'Snapchat' },
+            { id: 'pinterest', value: 'Pinterest' },
+            { id: 'youtube', value: 'YouTube' },
+            { id: 'programmatic', value: 'Programmatic (HTML5)' },
+          ],
+        },
+      ],
+    },
+
+    // Scratch - Template formats
+    {
+      id: 'template_formats_need_page',
+      parentId: 'brief',
+      title: 'Select the template formats you need',
+      showIf: {
+        all: [
+          {
+            q: 'existing_creative_templates',
+            op: 'in',
+            value: ["scratch_raw_assets", "scratch_working_files"],
+          },
+        ],
+      },
+      fields: [
+        {
+          id: 'newsize_meta_template_formats',
+          type: 'multi_select',
+          startIcon: 'meta',
+          label: 'Meta',
+          description: 'Select template formats you need',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'meta',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: 'static', value: 'Static', price: '3500' },
+            { id: 'video', value: 'Video', price: '3500' },
+            { id: 'carousel', value: 'Carousel', price: '4500' },
+            { id: 'dpa_daba', value: 'DPA / DABA', price: '3500' },
+            { id: 'cpv', value: 'CPV', price: '3500' },
+          ],
+        },
+        {
+          id: 'newsize_tiktok_template_formats',
+          type: 'multi_select',
+          startIcon: 'tiktok',
+          label: 'TikTok',
+          description: 'Select template formats',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'tiktok',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: 'static', value: 'Static', price: '3500' },
+            { id: 'video', value: 'Video', price: '3500' },
+            { id: 'carousel', value: 'Carousel', price: '4500' },
+            { id: 'dpa_daba', value: 'DPA / DABA', price: '3500' },
+            { id: 'cpv', value: 'CPV', price: '3500' },
+          ],
+        },
+        {
+          id: 'newsize_snapchat_template_formats',
+          type: 'multi_select',
+          startIcon: 'snapchat',
+          label: 'Snapchat',
+          description: 'Select template formats',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'snapchat',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: 'static', value: 'Static', price: '3500' },
+            { id: 'video', value: 'Video', price: '3500' },
+            { id: 'carousel', value: 'Carousel', price: '4500' },
+            { id: 'dpa_daba', value: 'DPA / DABA', price: '3500' },
+            { id: 'cpv', value: 'CPV', price: '3500' },
+          ],
+        },
+        {
+          id: 'newsize_pinterest_template_formats',
+          type: 'multi_select',
+          startIcon: 'pinterest',
+          label: 'Pinterest',
+          description: 'Select template formats',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'pinterest',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: 'static', value: 'Static', price: '3500' },
+            { id: 'video', value: 'Video', price: '3500' },
+            { id: 'carousel', value: 'Carousel', price: '3500' },
+          ],
+        },
+        {
+          id: 'newsize_youtube_template_formats',
+          type: 'multi_select',
+          startIcon: 'youtube',
+          label: 'YouTube',
+          description: 'Select template formats',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'youtube',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: 'static', value: 'Static', price: '3500' },
+            { id: 'video', value: 'Video', price: '3500' },
+            { id: 'carousel', value: 'Carousel', price: '4500' },
+          ],
+        },
+        {
+          id: 'newsize_programmatic_template_formats',
+          type: 'multi_select',
+          label: 'Programmatic (HTML5)',
+          description: 'Select template formats',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'programmatic',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: 'static', value: 'Static', price: '10000' },
+            { id: 'video', value: 'Video', price: '10000' },
+            { id: 'carousel', value: 'Carousel', price: '10000' },
+            { id: 'dpa_daba', value: 'DPA / DABA', price: '10000' },
+            { id: 'cpv', value: 'CPV', price: '10000' },
+          ],
+        },
+      ],
+    },
+
+    // Scratch - Template sizes
+    {
+      id: 'template_sizes_need_page',
+      parentId: 'brief',
+      title: 'Select the template sizes you need',
+      showIf: {
+        all: [
+          {
+            q: 'existing_creative_templates',
+            op: 'in',
+            value: ["scratch_raw_assets", "scratch_working_files"],
+          },
+        ],
+      },
+      fields: [
+        {
+          id: 'newsize_meta_template_sizes',
+          type: 'multi_select',
+          startIcon: 'meta',
+          label: 'Meta',
+          description: 'Select template sizes',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'meta',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '9:16', value: '9:16' },
+          ],
+        },
+        {
+          id: 'newsize_tiktok_template_sizes',
+          type: 'multi_select',
+          startIcon: 'tiktok',
+          label: 'TikTok',
+          description: 'Select template sizes',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'tiktok',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '9:16', value: '9:16' },
+          ],
+        },
+        {
+          id: 'newsize_snapchat_template_sizes',
+          type: 'multi_select',
+          startIcon: 'snapchat',
+          label: 'Snapchat',
+          description: 'Select template sizes',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'snapchat',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '9:16', value: '9:16' },
+          ],
+        },
+        {
+          id: 'newsize_pinterest_template_sizes',
+          type: 'multi_select',
+          startIcon: 'pinterest',
+          label: 'Pinterest',
+          description: 'Select template sizes',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'pinterest',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [{ id: '4:3', value: '4:3' }],
+        },
+        {
+          id: 'newsize_youtube_template_sizes',
+          type: 'multi_select',
+          startIcon: 'youtube',
+          label: 'YouTube',
+          description: 'Select template sizes',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'youtube',
+          },
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '9:16', value: '9:16' },
+            { id: '16:9', value: '16:9' },
+          ],
+        },
+        {
+          id: 'newsize_programmatic_template_sizes',
+          type: 'text',
+          placeholder: 'Please list the sizes that you need',
+          label: 'Programmatic (HTML5)',
+          description: 'Select template sizes',
+          showIf: {
+            q: 'scratch_platforms_advertising_on',
+            op: 'contains',
+            value: 'programmatic',
+          },
+          isRequired: true,
+        },
+      ],
+    },
+
+    // Sparkworks - Iterations
+
+    {
+      id: 'scratch_iterations_languages_page',
+      parentId: 'brief',
+      showIf: {
+        all: [
+          { q: 'request_type', op: 'eq', value: 'scoping' },
+          {
+            q: 'existing_creative_templates',
+            op: 'in',
+            value: ["scratch_raw_assets", "scratch_working_files"],
+          },
+        ],
+      },
+      fields: [
+        {
+          id: 'need_iterations_campaign_variants',
+          type: 'single_select',
+          label: 'Will you need more iterations / run campaign variants?',
+          isCompact: true,
+          options: [
+            { id: 'yes', value: 'Yes' },
+            { id: 'no', value: 'No' },
+          ],
+        },
+      ]
+    },
+
+    // END
+
+    // Scratch Flow
+    {
+      id: 'creative_suite_page',
+      parentId: 'brief',
+      title: 'Creative Delivery',
+      showIf: { q: 'request_type', op: 'eq', value: 'creative_suite' },
+      fields: [
+        {
+          type: 'title',
+          label: 'Channels',
+          description: 'Select all that apply',
+        },
+        {
+          id: 'meta_channels',
+          type: 'multi_select',
+          startIcon: 'meta',
+          label: 'Meta',
+          isCompact: true,
+          options: [
+            { id: 'meta_static', value: 'Static' },
+            { id: 'meta_video', value: 'Video' },
+          ],
+        },
+        {
+          id: 'google_channels',
+          type: 'multi_select',
+          startIcon: 'google',
+          label: 'Google',
+          isCompact: true,
+          options: [
+            { id: 'google_display', value: 'Display' },
+            { id: 'google_video', value: 'Video' },
+            { id: 'google_dsps', value: 'DSPs' },
+          ],
+        },
+        {
+          id: 'google_ads_channels',
+          type: 'multi_select',
+          startIcon: 'google_ads',
+          label: 'Google Ads',
+          isCompact: true,
+          options: [{ id: 'google_ads', value: 'Google Ads' }],
+        },
+        {
+          id: 'tiktok_channels',
+          type: 'multi_select',
+          startIcon: 'tiktok',
+          label: 'TikTok',
+          isCompact: true,
+          options: [
+            { id: 'tiktok_static', value: 'Static' },
+            { id: 'tiktok_video', value: 'Video' },
+          ],
+        },
+        {
+          id: 'youtube_channels',
+          type: 'multi_select',
+          startIcon: 'youtube',
+          label: 'YouTube',
+          isCompact: true,
+          options: [{ id: 'youtube', value: 'YouTube' }],
+        },
+        {
+          id: 'pinterest_channels',
+          type: 'multi_select',
+          startIcon: 'pinterest',
+          label: 'Pinterest',
+          isCompact: true,
+          options: [
+            { id: 'pinterest_static', value: 'Static' },
+            { id: 'pinterest_video', value: 'Video' },
+          ],
+        },
+        {
+          id: 'snapchat_channels',
+          type: 'multi_select',
+          startIcon: 'snapchat',
+          label: 'Snapchat',
+          isCompact: true,
+          options: [
+            { id: 'snapchat_static', value: 'Static' },
+            { id: 'snapchat_video', value: 'Video' },
+          ],
+        },
+      ],
+    },
+
+    // Original Concept - Channel formats
+    {
+      id: 'channel_formats_page',
+      parentId: 'brief',
+      title: 'Formats',
+      description: 'Select formats for each channel',
+      showIf: { q: 'request_type', op: 'eq', value: 'original_concept' },
+      fields: [
+        {
+          id: 'meta_static_formats',
+          type: 'multi_select',
+          label: 'Meta Static',
+          isCompact: true,
+          showIf: { q: 'meta_channels', op: 'contains', value: 'meta_static' },
+          options: [{ id: 'meta_single_image', value: 'Meta Single Image' }],
+        },
+        {
+          id: 'meta_video_formats',
+          type: 'multi_select',
+          label: 'Meta Video',
+          isCompact: true,
+          showIf: { q: 'meta_channels', op: 'contains', value: 'meta_video' },
+          options: [{ id: 'meta_single_video', value: 'Meta Single Video' }],
+        },
+        {
+          id: 'google_display_formats',
+          type: 'multi_select',
+          label: 'Google Display',
+          isCompact: true,
+          showIf: {
+            q: 'google_channels',
+            op: 'contains',
+            value: 'google_display',
+          },
+          options: [
+            { id: 'google_customer_match', value: 'Google Customer Match' },
+            {
+              id: 'google_display_ad_rich_media_display',
+              value: 'Google Display Ad - Rich Media Display',
+            },
+            {
+              id: 'google_display_ad_standard_display',
+              value: 'Google Display Ad - Standard Display',
+            },
+            {
+              id: 'google_display_ad_image',
+              value: 'Google Display Ad - Image',
+            },
+            {
+              id: 'google_ads_performance_max',
+              value: 'Google Ads Perfomance Max',
+            },
+          ],
+        },
+        {
+          id: 'google_video_formats',
+          type: 'multi_select',
+          label: 'Google Video',
+          isCompact: true,
+          showIf: {
+            q: 'google_channels',
+            op: 'contains',
+            value: 'google_video',
+          },
+          options: [
+            { id: 'google_customer_match', value: 'Google Customer Match' },
+            {
+              id: 'google_online_video_single_video_vast',
+              value: 'Google Online Video Single Video - Vast',
+            },
+            {
+              id: 'google_single_video_vast',
+              value: 'Google Single Video - Vast',
+            },
+            {
+              id: 'google_ads_performance_max',
+              value: 'Google Ads Perfomance Max',
+            },
+          ],
+        },
+        {
+          id: 'dsps_formats',
+          type: 'multi_select',
+          label: 'DSPs',
+          isCompact: true,
+          showIf: {
+            q: 'google_channels',
+            op: 'contains',
+            value: 'google_dsps',
+          },
+          options: [
+            { id: 'amazon_dsp', value: 'Amazon DSP' },
+            { id: 'the_trade_desk_dsp', value: 'The Trade Desk DSP' },
+            { id: 'yahoo_dsp', value: 'Yahoo DSP' },
+          ],
+        },
+        {
+          id: 'google_ads_formats',
+          type: 'multi_select',
+          label: 'Google Ads',
+          isCompact: true,
+          showIf: {
+            q: 'google_ads_channels',
+            op: 'contains',
+            value: 'google_ads',
+          },
+          options: [
+            {
+              id: 'google_ads_display_ad_standard_display',
+              value: 'Google Ads Display Ad - Standard Display',
+            },
+            { id: 'google_ads_demand_gen', value: 'Google Ads Demand Gen' },
+            { id: 'google_ads_app', value: 'Google Ads App' },
+            { id: 'google_uac', value: 'Google UAC' },
+          ],
+        },
+        {
+          id: 'tiktok_static_formats',
+          type: 'multi_select',
+          label: 'Tiktok Static',
+          isCompact: true,
+          showIf: {
+            q: 'tiktok_channels',
+            op: 'contains',
+            value: 'tiktok_static',
+          },
+          options: [
+            {
+              id: 'tiktok_regular_ad_image',
+              value: 'Tiktok Regular Ad - Image',
+            },
+          ],
+        },
+        {
+          id: 'tiktok_video_formats',
+          type: 'multi_select',
+          label: 'Tiktok Video',
+          isCompact: true,
+          showIf: {
+            q: 'tiktok_channels',
+            op: 'contains',
+            value: 'tiktok_video',
+          },
+          options: [
+            {
+              id: 'tiktok_regular_ad_video',
+              value: 'Tiktok Regular Ad - Video',
+            },
+          ],
+        },
+        {
+          id: 'youtube_formats',
+          type: 'multi_select',
+          label: 'YouTube',
+          isCompact: true,
+          showIf: { q: 'youtube_channels', op: 'contains', value: 'youtube' },
+          options: [
+            {
+              id: 'youtube_ad_site_served',
+              value: 'Youtube Ad - Youtube Site Served',
+            },
+          ],
+        },
+        {
+          id: 'pinterest_static_formats',
+          type: 'multi_select',
+          label: 'Pinterest Static',
+          isCompact: true,
+          showIf: {
+            q: 'pinterest_channels',
+            op: 'contains',
+            value: 'pinterest_static',
+          },
+          options: [
+            {
+              id: 'pinterest_single_image',
+              value: 'Pinterest Single Image',
+            },
+          ],
+        },
+        {
+          id: 'pinterest_video_formats',
+          type: 'multi_select',
+          label: 'Pinterest Video',
+          isCompact: true,
+          showIf: {
+            q: 'pinterest_channels',
+            op: 'contains',
+            value: 'pinterest_video',
+          },
+          options: [
+            {
+              id: 'pinterest_single_video',
+              value: 'Pinterest Single Video',
+            },
+          ],
+        },
+        {
+          id: 'snapchat_static_formats',
+          type: 'multi_select',
+          label: 'Snapchat Static',
+          isCompact: true,
+          showIf: {
+            q: 'snapchat_channels',
+            op: 'contains',
+            value: 'snapchat_static',
+          },
+          options: [
+            {
+              id: 'snapchat_single_image',
+              value: 'Snapchat Single Image',
+            },
+          ],
+        },
+        {
+          id: 'snapchat_video_formats',
+          type: 'multi_select',
+          label: 'Snapchat Video',
+          isCompact: true,
+          showIf: {
+            q: 'snapchat_channels',
+            op: 'contains',
+            value: 'snapchat_video',
+          },
+          options: [
+            {
+              id: 'snapchat_single_video',
+              value: 'Snapchat Single Video',
+            },
+          ],
+        },
+      ],
+    },
+
+    // Original Concept - Format sizes
+    {
+      id: 'format_sizes_page',
+      parentId: 'brief',
+      title: 'Sizes',
+      description: 'Select sizes for each format',
+      showIf: { q: 'request_type', op: 'eq', value: 'original_concept' },
+      fields: [
+        {
+          id: 'meta_single_image_sizes',
+          type: 'multi_select',
+          label: 'Meta Single Image',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'meta_static_formats',
+            op: 'contains',
+            value: 'meta_single_image',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+          ],
+        },
+        {
+          id: 'meta_single_video_sizes',
+          type: 'multi_select',
+          label: 'Meta Single Video',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'meta_video_formats',
+            op: 'contains',
+            value: 'meta_single_video',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+          ],
+        },
+        {
+          id: 'google_display_customer_match_sizes',
+          type: 'multi_select',
+          label: 'Google Customer Match',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_display_formats',
+            op: 'contains',
+            value: 'google_customer_match',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_rich_media_sizes',
+          type: 'multi_select',
+          label: 'Google Display Ad - Rich Media Display',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_display_formats',
+            op: 'contains',
+            value: 'google_display_ad_rich_media_display',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_standard_display_sizes',
+          type: 'multi_select',
+          label: 'Google Display Ad - Standard Display',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_display_formats',
+            op: 'contains',
+            value: 'google_display_ad_standard_display',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_display_image_sizes',
+          type: 'multi_select',
+          label: 'Google Display Ad - Image',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_display_formats',
+            op: 'contains',
+            value: 'google_display_ad_image',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_display_performance_max_sizes',
+          type: 'multi_select',
+          label: 'Google Display Ads Performance Max',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_display_formats',
+            op: 'contains',
+            value: 'google_ads_performance_max',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_video_customer_match_sizes',
+          type: 'multi_select',
+          label: 'Google Customer Match',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_video_formats',
+            op: 'contains',
+            value: 'google_customer_match',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_online_video_vast_sizes',
+          type: 'multi_select',
+          label: 'Google Online Video Single Video - Vast',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_video_formats',
+            op: 'contains',
+            value: 'google_online_video_single_video_vast',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_single_video_vast_sizes',
+          type: 'multi_select',
+          label: 'Google Single Video - Vast',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_video_formats',
+            op: 'contains',
+            value: 'google_single_video_vast',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_video_performance_max_sizes',
+          type: 'multi_select',
+          label: 'Google Ads Performance Max',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_video_formats',
+            op: 'contains',
+            value: 'google_ads_performance_max',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'amazon_dsp_sizes',
+          type: 'multi_select',
+          label: 'Amazon DSP',
+          isCompact: true,
+          allowCustom: true,
+          showIf: { q: 'dsps_formats', op: 'contains', value: 'amazon_dsp' },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'ttd_dsp_sizes',
+          type: 'multi_select',
+          label: 'TTD DSP',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'dsps_formats',
+            op: 'contains',
+            value: 'the_trade_desk_dsp',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'yahoo_dsp_sizes',
+          type: 'multi_select',
+          label: 'Yahoo DSP',
+          isCompact: true,
+          allowCustom: true,
+          showIf: { q: 'dsps_formats', op: 'contains', value: 'yahoo_dsp' },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_ads_standard_display_sizes',
+          type: 'multi_select',
+          label: 'Google Ads Display Ad - Standard Display',
+          isCompact: true,
+          allowCustom: true,
+          isRequired: true,
+          showIf: {
+            q: 'google_ads_formats',
+            op: 'contains',
+            value: 'google_ads_display_ad_standard_display',
+          },
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_ads_demand_gen_sizes',
+          type: 'multi_select',
+          label: 'Google Ads Demand Gen',
+          isCompact: true,
+          allowCustom: true,
+          isRequired: true,
+          showIf: {
+            q: 'google_ads_formats',
+            op: 'contains',
+            value: 'google_ads_demand_gen',
+          },
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_ads_app_sizes',
+          type: 'multi_select',
+          label: 'Google Ads App',
+          isCompact: true,
+          allowCustom: true,
+          isRequired: true,
+          showIf: {
+            q: 'google_ads_formats',
+            op: 'contains',
+            value: 'google_ads_app',
+          },
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'google_ads_uac_sizes',
+          type: 'multi_select',
+          label: 'Google UAC',
+          isCompact: true,
+          allowCustom: true,
+          showIf: {
+            q: 'google_ads_formats',
+            op: 'contains',
+            value: 'google_uac',
+          },
+          isRequired: true,
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '1:1', value: '1:1' },
+            { id: '4:5', value: '4:5' },
+            { id: '2:3', value: '2:3' },
+            { id: '4:3', value: '4:3' },
+            { id: '16:9', value: '16:9' },
+            { id: '1.91:1', value: '1.91:1' },
+          ],
+        },
+        {
+          id: 'tiktok_static_image_sizes',
+          type: 'multi_select',
+          label: 'Tiktok Regular Ad - Image',
+          isCompact: true,
+          allowCustom: true,
+          isRequired: true,
+          showIf: {
+            q: 'tiktok_static_formats',
+            op: 'contains',
+            value: 'tiktok_regular_ad_image',
+          },
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '4:5', value: '4:5' },
+          ],
+        },
+        {
+          id: 'tiktok_video_sizes',
+          type: 'multi_select',
+          label: 'Tiktok Regular Ad - Video',
+          isCompact: true,
+          allowCustom: true,
+          isRequired: true,
+          showIf: {
+            q: 'tiktok_video_formats',
+            op: 'contains',
+            value: 'tiktok_regular_ad_video',
+          },
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '4:5', value: '4:5' },
+          ],
+        },
+        {
+          id: 'youtube_ad_sizes',
+          type: 'multi_select',
+          label: 'Youtube Ad - Youtube Site Served',
+          isCompact: true,
+          allowCustom: true,
+          isRequired: true,
+          showIf: {
+            q: 'youtube_formats',
+            op: 'contains',
+            value: 'youtube_ad_site_served',
+          },
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '4:5', value: '4:5' },
+          ],
+        },
+        {
+          id: 'pinterest_single_image_sizes',
+          type: 'multi_select',
+          label: 'Pinterest Single Image',
+          isCompact: true,
+          isRequired: true,
+          allowCustom: true,
+          showIf: {
+            q: 'pinterest_static_formats',
+            op: 'contains',
+            value: 'pinterest_single_image',
+          },
+          options: [{ id: '2:3', value: '2:3' }],
+        },
+        {
+          id: 'pinterest_single_video_sizes',
+          type: 'multi_select',
+          label: 'Pinterest Single Video',
+          isCompact: true,
+          isRequired: true,
+          allowCustom: true,
+          showIf: {
+            q: 'pinterest_video_formats',
+            op: 'contains',
+            value: 'pinterest_single_video',
+          },
+          options: [{ id: '2:3', value: '2:3' }],
+        },
+        {
+          id: 'snapchat_single_image_sizes',
+          type: 'multi_select',
+          label: 'Snapchat Single Image',
+          isCompact: true,
+          isRequired: true,
+          allowCustom: true,
+          showIf: {
+            q: 'snapchat_static_formats',
+            op: 'contains',
+            value: 'snapchat_single_image',
+          },
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '4:5', value: '4:5' },
+          ],
+        },
+        {
+          id: 'snapchat_single_video_sizes',
+          type: 'multi_select',
+          label: 'Snapchat Single Video',
+          isCompact: true,
+          isRequired: true,
+          allowCustom: true,
+          showIf: {
+            q: 'snapchat_video_formats',
+            op: 'contains',
+            value: 'snapchat_single_video',
+          },
+          options: [
+            { id: '9:16', value: '9:16' },
+            { id: '4:5', value: '4:5' },
+          ],
+        },
+      ],
+    },
+
+    // Scoping
+    {
+      id: 'scoping_page',
+      parentId: 'brief',
+      title: 'Sparkworks',
+      showIf: { q: 'request_type', op: 'eq', value: 'scoping' },
+      fields: [
+        {
+          id: 'creative_project_goals',
+          type: 'long_text',
+          label: 'Please tell us about your creative project and goals',
+          placeholder:
+            'Describe the campaign you need creatives for and what you hope to achieve',
+          isRequired: false,
+        },
+        {
+          id: 'stage_funnel_targeting',
+          type: 'multi_select',
+          label: 'What stage of the funnel is your creative project targeting?',
+          isRequired: true,
+          options: [
+            { id: 'UF', value: 'Upper Funnel (Awareness / Reach)' },
+            { id: 'MF', value: 'Middle Funnel (Consideration / Engagement)' },
+            {
+              id: 'LF',
+              value: 'Lower Funnel (Retargeting / Personalization)',
+            },
+            { id: 'FF', value: 'Full Funnel Targeting' },
+          ],
+        },
+        {
+          id: 'existing_creative_templates',
+          type: 'single_select',
+          label: 'Will this project build on existing creative templates?',
+          isRequired: true,
+          options: [
+            {
+              id: 'scratch_raw_assets',
+              value:
+                'We’re starting from scratch and I only have raw assets to share (images, video, brand guidelines, etc.)',
+              price: '12000',
+            },
+            {
+              id: 'scratch_working_files',
+              value:
+                'We’re starting from scratch but I have layered working files (PSD or Figma)',
+            },
+            {
+              id: 'reusing_existing_templates',
+              value: 'Yes, we’re reusing / updating existing templates',
+            },
+          ],
+        },
+      ],
+    },
+
+    // Reusing existing templates
+    {
+      id: 'resizing_or_new_iteration_page',
+      parentId: 'brief',
+      showIf: {
+        q: 'existing_creative_templates',
+        op: 'eq',
+        value: 'reusing_existing_templates',
+      },
+      fields: [
+        {
+          id: 'resizing_or_new_iteration',
+          type: 'single_select',
+          label: 'Are you resizing or updating existing templates?',
+          isRequired: true,
+          options: [
+            { id: 'resizing', value: 'Resizing' },
+            { id: 'new_iteration', value: 'New Iteration' },
+          ],
+        },
+      ],
+    },
+
+    // Scoping - New iteration
+    {
+      id: 'new_iteration_page',
+      parentId: 'brief',
+      showIf: {
+        all: [
+          { q: 'request_type', op: 'eq', value: 'scoping' },
+          {
+            q: 'existing_creative_templates',
+            op: 'eq',
+            value: "reusing_existing_templates",
+          },
+          {
+            q: 'resizing_or_new_iteration',
+            op: 'eq',
+            value: "new_iteration",
+          },
+        ],
+      },
+      fields: [
+        {
+          id: 'iteration_campaign_variants_need',
+          type: 'text',
+          label: 'How many more iterations / campaign variants do you need?',
+          isRequired: true,
+        },
+      ],
+    },
+
+    // Scoping - Existing - Platforms advertising on
+    {
+      id: 'existing_platforms_advertising_on_page',
+      parentId: 'brief',
+      title: 'What platforms are you advertising on?',
+      showIf: {
+        all: [
+          { q: 'request_type', op: 'eq', value: 'scoping' },
+          {
+            q: 'existing_creative_templates',
+            op: 'eq',
+            value: "reusing_existing_templates",
+          },
+          {
+            q: 'resizing_or_new_iteration',
+            op: 'in',
+            value: ["resizing", "new_iteration"],
+          },
+        ],
+      },
+      fields: [
+        {
+          id: 'existing_meta_template_sizes',
+          type: 'multi_select',
+          startIcon: 'meta',
+          label: 'Meta',
+          description: 'Select template sizes',
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: '1:1', value: '1:1', price: '1400' },
+            { id: '4:5', value: '4:5', price: '1400' },
+            { id: '9:16', value: '9:16', price: '1400' },
+          ],
+        },
+        {
+          id: 'existing_tiktok_template_sizes',
+          type: 'multi_select',
+          startIcon: 'tiktok',
+          label: 'TikTok',
+          description: 'Select template sizes',
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: '1:1', value: '1:1', price: '1400' },
+            { id: '4:5', value: '4:5', price: '1400' },
+            { id: '9:16', value: '9:16', price: '1400' },
+          ],
+        },
+        {
+          id: 'existing_snapchat_template_sizes',
+          type: 'multi_select',
+          startIcon: 'snapchat',
+          label: 'Snapchat',
+          description: 'Select template sizes',
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: '1:1', value: '1:1', price: '1400' },
+            { id: '4:5', value: '4:5', price: '1400' },
+            { id: '9:16', value: '9:16', price: '1400' },
+          ],
+        },
+        {
+          id: 'existing_pinterest_template_sizes',
+          type: 'multi_select',
+          startIcon: 'pinterest',
+          label: 'Pinterest',
+          description: 'Select template sizes',
+          isCompact: true,
+          isRequired: true,
+          options: [{ id: '4:3', value: '4:3', price: '1400' }],
+        },
+        {
+          id: 'existing_youtube_template_sizes',
+          type: 'multi_select',
+          startIcon: 'youtube',
+          label: 'YouTube',
+          description: 'Select template sizes',
+          isCompact: true,
+          isRequired: true,
+          options: [
+            { id: '1:1', value: '1:1', price: '1400' },
+            { id: '4:5', value: '4:5', price: '1400' },
+            { id: '9:16', value: '9:16', price: '1400' },
+            { id: '16:9', value: '16:9', price: '1400' },
+          ],
+        },
+      ],
+    },
+
+    // Scoping - Scratch - Iterations Y/N
+    {
+      id: 'scratch_iterations_languages_page',
+      parentId: 'brief',
+      showIf: {
+        all: [
+          { q: 'request_type', op: 'eq', value: 'scoping' },
+          {
+            q: 'existing_creative_templates',
+            op: 'in',
+            value: ["scratch_raw_assets", "scratch_working_files"],
+          },
+        ],
+      },
+      fields: [
+        {
+          id: 'need_iterations_campaign_variants',
+          type: 'single_select',
+          label: 'Will you need more iterations / run campaign variants?',
+          isCompact: true,
+          options: [
+            { id: 'yes', value: 'Yes', price: '1400' },
+            { id: 'no', value: 'No' },
+          ],
+        },
+        // {
+        //   id: 'many_iterations_campaign_variants',
+        //   type: 'text',
+        //   label: 'How many more iterations / campaign variants do you need?',
+        // },
+        // {
+        //   id: 'campaign_languages_count',
+        //   type: 'single_select',
+        //   label: 'How many Language(s) are covered by your campaign?',
+        //   options: [
+        //     {
+        //       id: '1_language_count_costing',
+        //       value: '1 language only',
+        //       price: '0',
+        //     },
+        //     {
+        //       id: 'below10_languages_count_costing',
+        //       value: 'Below 10 languages',
+        //       price: '5000',
+        //     },
+        //     {
+        //       id: 'below25_languages_count_costing',
+        //       value: 'Below 25 languages',
+        //       price: '8000',
+        //     },
+        //     {
+        //       id: 'more25_languages_count_costing',
+        //       value: 'More than 25 languages',
+        //       price: '10000',
+        //     },
+        //   ],
+        // },
+      ],
+    },
+  ],
+};
+
+export default schema;
